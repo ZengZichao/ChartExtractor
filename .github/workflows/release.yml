@@ -2,14 +2,21 @@ name: Release
 
 # 在推送版本标签（如 v0.1.0）时，自动构建 macOS 安装包并发布到 GitHub Releases。
 #
-# 说明：
-#   - 默认构建为「ad-hoc 签名」产物（无需证书即可运行于本机，但首次打开会被
-#     Gatekeeper 拦截）。用户可右键「打开」或执行 `xattr -cr` 绕过。
-#   - 若希望自动「Developer ID 签名 + 公证」，请在本仓库 Settings → Secrets
-#     中配置以下变量后，参考 scripts/notarize.sh 在工作流内追加公证步骤：
-#       APPLE_CERTIFICATE          (p12 的 base64)
-#       APPLE_CERTIFICATE_PASSWORD
-#       APPLE_ID / APPLE_PASSWORD / APPLE_TEAM_ID
+# 签名与公证（可选，按 Secrets 是否配置自动切换）：
+#   - 未配置任何 Apple Secret 时：沿用「ad-hoc 签名」，产物可在本机运行，但首次打开
+#     会被 Gatekeeper 拦截（右键「打开」或 `xattr -cr` 绕过）。
+#   - 配置了所需 Secrets 后：自动执行「Developer ID 签名 + 公证 + 装订(staple)」，
+#     用户双击即开、无 Gatekeeper 警告。
+#
+#   所需 Secrets（仓库 Settings → Secrets and variables → Actions → Repository secrets）：
+#     APPLE_CERTIFICATE            Developer ID Application 证书导出的 p12，做 base64 编码
+#     APPLE_CERTIFICATE_PASSWORD   p12 的导出密码
+#     APPLE_SIGNING_IDENTITY       签名身份，例如 "Developer ID Application: Zichao Zeng (TEAMID)"
+#     APPLE_ID                     Apple 账号邮箱
+#     APPLE_PASSWORD               App 专用密码（app-specific password）
+#     APPLE_TEAM_ID                Apple Developer Team ID（10 位大写字母数字）
+#
+#   本地手动公证可参考 scripts/notarize.sh；本工作流使用 xcrun notarytool 直接公证。
 
 on:
   push:
@@ -48,8 +55,52 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Build Tauri bundles (app + dmg)
+      - name: Import Apple certificate
+        if: ${{ secrets.APPLE_CERTIFICATE != '' }}
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          KEYCHAIN="$RUNNER_TEMP/build.keychain-db"
+          CERT_P12="$RUNNER_TEMP/certificate.p12"
+          echo -n "$APPLE_CERTIFICATE" | base64 -d > "$CERT_P12"
+          security create-keychain -p "" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "" "$KEYCHAIN"
+          security import "$CERT_P12" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN"
+          security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" "$KEYCHAIN"
+
+      - name: Build Tauri bundles (signed)
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: npx tauri build --bundles app,dmg
+
+      - name: Notarize and staple
+        if: ${{ secrets.APPLE_CERTIFICATE != '' }}
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          DMG=$(ls -1 src-tauri/target/release/bundle/dmg/*.dmg | head -n1)
+          APP=$(ls -1d src-tauri/target/release/bundle/macos/*.app | head -n1)
+          for target in "$DMG" "$APP"; do
+            echo "Notarizing $target ..."
+            xcrun notarytool submit "$target" \
+              --apple-id "$APPLE_ID" \
+              --password "$APPLE_PASSWORD" \
+              --team-id "$APPLE_TEAM_ID" \
+              --wait
+            xcrun stapler staple "$target"
+          done
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
@@ -66,7 +117,8 @@ jobs:
 
             ### 下载与安装
             - 下载 `ChartExtractor-*.dmg`，拖入「应用程序」。
-            - 若系统提示「无法验证开发者」：右键点击 App 选「打开」，或在终端执行
+            - 本版本如已配置 Apple 签名 Secret，则使用 Developer ID 签名并公证，双击即可打开，无 Gatekeeper 警告。
+            - 若系统仍提示「无法验证开发者」：右键点击 App 选「打开」，或执行
               `xattr -cr /Applications/ChartExtractor.app` 后重试。
 
             ### 变更记录
