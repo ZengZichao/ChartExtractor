@@ -92,7 +92,7 @@ for b in badges:
     d.text((bx + pad_x, by + 9), b, font=bf, fill=ACCENT)
     bx += bw + 16
 
-d.text((tx, 480), "Developer-ID signed & notarized · GPL-3.0",
+d.text((tx, 480), "Ad-hoc signed · GPL-3.0",
        font=font(22), fill=(139, 148, 158))
 
 img.save(OUT, "PNG")
