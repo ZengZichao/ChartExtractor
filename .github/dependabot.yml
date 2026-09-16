@@ -7,6 +7,9 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "deps(npm)"
+    # 仅自动收 minor/patch；屏蔽 major 升级，避免把 React 18 / TS 5 项目误推到 19 / 7
+    ignore:
+      - update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "cargo"
     directory: "/src-tauri"
@@ -15,3 +18,5 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "deps(cargo)"
+    ignore:
+      - update-types: ["version-update:semver-major"]
