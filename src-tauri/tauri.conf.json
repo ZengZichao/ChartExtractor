@@ -1,0 +1,49 @@
+{
+ "$schema": "https://schema.tauri.app/config/2",
+ "productName": "ChartExtractor",
+ "version": "0.1.0",
+ "identifier": "com.chartextractor",
+ "build": {
+ "beforeDevCommand": "npm run dev",
+ "devUrl": "http://localhost:5173",
+ "beforeBuildCommand": "npm run build:renderer",
+ "frontendDist": "../dist"
+ },
+ "app": {
+ "windows": [
+ {
+ "label": "main",
+ "title": "图表数据提取器",
+ "width": 1440,
+ "height": 900,
+ "minWidth": 1024,
+ "minHeight": 680,
+ "resizable": true,
+ "center": true,
+ "dragDropEnabled": true,
+ "titleBarStyle": "Overlay",
+ "hiddenTitle": true
+ }
+ ],
+ "security": {
+ "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: asset: blob: https://asset.localhost http://asset.localhost; connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost; font-src 'self' data:; worker-src 'self' blob:; media-src 'self' data: blob: asset:"
+ }
+ },
+ "bundle": {
+ "active": true,
+ "targets": ["app"],
+ "icon": [
+ "icons/32x32.png",
+ "icons/128x128.png",
+ "icons/128x128@2x.png",
+ "icons/icon.icns",
+ "icons/icon.png"
+ ],
+ "category": "Productivity",
+ "shortDescription": "离线图表数据提取工具（中英双语界面）",
+ "longDescription": "纯本地离线运行的图表数据提取工具，支持图片/PDF 导入、坐标标定（线性/对数）、曲线与散点追踪、批量处理、xlsx/CSV/JSON 导出。中英双语界面。",
+ "macOS": {
+ "minimumSystemVersion": "10.15"
+ }
+ }
+}

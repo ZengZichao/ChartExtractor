@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+release/
+# 本地便捷副本：正式分发走 GitHub Releases，不进仓库
+/ChartExtractor.app
+
+# Rust / Tauri build artifacts
+src-tauri/target/
+
+# Tauri generated schemas (regenerated at build time)
+src-tauri/gen/schemas/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local agent/tool state (never publish)
+.mimosa/
+.v2c/

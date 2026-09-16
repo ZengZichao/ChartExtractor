@@ -1,0 +1,64 @@
+name: 缺陷报告 (Bug Report)
+description: 报告一个可复现的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请尽量提供完整信息，便于我们复现与定位。
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      options:
+        - macOS 15 (Sequoia)
+        - macOS 14 (Sonoma)
+        - macOS 13 (Ventura)
+        - macOS 12 (Monterey)
+        - macOS 11 (Big Sur)
+        - 其他 / 不确定
+    validations:
+      required: true
+  - type: dropdown
+    id: arch
+    attributes:
+      label: 架构
+      options:
+        - Apple Silicon (arm64)
+        - Intel (x86_64)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ChartExtractor 版本
+      placeholder: 例如 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: 复现步骤
+      description: 一步步描述如何触发该问题
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: 补充信息（日志、截图等）
+      description: 可在下方拖拽上传截图
+    validations:
+      required: false

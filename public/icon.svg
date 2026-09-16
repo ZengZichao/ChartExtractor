@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a73e8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d47a1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4fc3f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00e5ff;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 圆角背景 -->
+  <rect x="16" y="16" width="480" height="480" rx="96" ry="96" fill="url(#bgGrad)" />
+
+  <!-- 图表坐标系 -->
+  <!-- Y轴 -->
+  <line x1="128" y1="96" x2="128" y2="384" stroke="rgba(255,255,255,0.4)" stroke-width="4" stroke-linecap="round" />
+  <!-- X轴 -->
+  <line x1="128" y1="384" x2="400" y2="384" stroke="rgba(255,255,255,0.4)" stroke-width="4" stroke-linecap="round" />
+
+  <!-- 网格线 -->
+  <line x1="128" y1="304" x2="400" y2="304" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+  <line x1="128" y1="224" x2="400" y2="224" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+  <line x1="128" y1="144" x2="400" y2="144" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+  <line x1="196" y1="96" x2="196" y2="384" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+  <line x1="264" y1="96" x2="264" y2="384" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+  <line x1="332" y1="96" x2="332" y2="384" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+
+  <!-- 数据曲线 -->
+  <path d="M 128 340 Q 180 310, 220 260 T 300 170 Q 340 140, 390 120"
+        fill="none" stroke="url(#curveGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" />
+
+  <!-- 数据点 -->
+  <circle cx="128" cy="340" r="7" fill="#00e5ff" stroke="white" stroke-width="2" />
+  <circle cx="196" cy="290" r="7" fill="#00e5ff" stroke="white" stroke-width="2" />
+  <circle cx="264" cy="225" r="7" fill="#00e5ff" stroke="white" stroke-width="2" />
+  <circle cx="332" cy="165" r="7" fill="#00e5ff" stroke="white" stroke-width="2" />
+  <circle cx="390" cy="120" r="7" fill="#00e5ff" stroke="white" stroke-width="2" />
+
+  <!-- 提取箭头 - 表示数据提取 -->
+  <g transform="translate(360, 300)">
+    <circle cx="0" cy="0" r="36" fill="rgba(255,255,255,0.15)" />
+    <path d="M -12 -4 L 4 -4 L 4 -12 L 16 0 L 4 12 L 4 4 L -12 4 Z"
+          fill="white" opacity="0.9" />
+  </g>
+
+  <!-- 箭头刻度标记 -->
+  <line x1="128" y1="384" x2="128" y2="396" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+  <line x1="196" y1="384" x2="196" y2="396" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+  <line x1="264" y1="384" x2="264" y2="396" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+  <line x1="332" y1="384" x2="332" y2="396" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+  <line x1="400" y1="384" x2="400" y2="396" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+  <line x1="116" y1="384" x2="128" y2="384" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+  <line x1="116" y1="304" x2="128" y2="304" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+  <line x1="116" y1="224" x2="128" y2="224" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+  <line x1="116" y1="144" x2="128" y2="144" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+</svg>

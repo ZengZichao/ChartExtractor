@@ -1,0 +1,26 @@
+[package]
+name = "chart-data-extractor"
+version = "0.1.0"
+description = "离线图表数据提取工具（中英双语界面）- 纯本地运行"
+authors = ["Zichao Zeng"]
+edition = "2021"
+rust-version = "1.77"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+encoding_rs = "0.8"
+base64 = "0.22"
+tokio = { version = "1", features = ["sync", "rt"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

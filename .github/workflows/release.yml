@@ -1,0 +1,73 @@
+name: Release
+
+# 在推送版本标签（如 v0.1.0）时，自动构建 macOS 安装包并发布到 GitHub Releases。
+#
+# 说明：
+#   - 默认构建为「ad-hoc 签名」产物（无需证书即可运行于本机，但首次打开会被
+#     Gatekeeper 拦截）。用户可右键「打开」或执行 `xattr -cr` 绕过。
+#   - 若希望自动「Developer ID 签名 + 公证」，请在本仓库 Settings → Secrets
+#     中配置以下变量后，参考 scripts/notarize.sh 在工作流内追加公证步骤：
+#       APPLE_CERTIFICATE          (p12 的 base64)
+#       APPLE_CERTIFICATE_PASSWORD
+#       APPLE_ID / APPLE_PASSWORD / APPLE_TEAM_ID
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build macOS bundles
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo / npm
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+            node_modules
+          key: ${{ runner.os }}-release-${{ hashFiles('**/package-lock.json', 'src-tauri/Cargo.lock') }}
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build Tauri bundles (app + dmg)
+        run: npx tauri build --bundles app,dmg
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          prerelease: false
+          files: |
+            src-tauri/target/release/bundle/dmg/*.dmg
+            src-tauri/target/release/bundle/macos/*.app
+          body: |
+            ## ChartExtractor ${{ github.ref_name }}
+
+            纯本地离线运行的图表数据提取工具（Tauri v2 + React + Rust）。
+
+            ### 下载与安装
+            - 下载 `ChartExtractor-*.dmg`，拖入「应用程序」。
+            - 若系统提示「无法验证开发者」：右键点击 App 选「打开」，或在终端执行
+              `xattr -cr /Applications/ChartExtractor.app` 后重试。
+
+            ### 变更记录
+            见 [CHANGELOG.md](https://github.com/ZengZichao/ChartExtractor/blob/main/CHANGELOG.md)。

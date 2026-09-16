@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-scan:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check (strict)
+        run: npm run typecheck
+
+      - name: Build renderer
+        run: npm run build:renderer
+
+      - name: Build Tauri app (.app)
+        run: npm run package
+
+      - name: Offline privacy scan
+        run: npm run lint:offline
+
+      - name: i18n integrity scan
+        run: npm run lint:i18n
+
+      - name: Unit tests
+        run: npx vitest run
