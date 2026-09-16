@@ -28,6 +28,7 @@ permissions:
 
 jobs:
   build:
+    if: startsWith(github.ref, 'refs/tags/v')
     name: Build macOS bundles
     runs-on: macos-latest
     steps:
