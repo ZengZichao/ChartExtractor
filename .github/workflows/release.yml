@@ -31,6 +31,10 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     name: Build macOS bundles
     runs-on: macos-latest
+    # GitHub Actions 不允许在 if 条件中直接引用 secrets 上下文，
+    # 故在 job 级 env 暴露 secret，步骤 if 改用 env 上下文判断。
+    env:
+      APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,7 +61,7 @@ jobs:
         run: npm ci
 
       - name: Import Apple certificate
-        if: ${{ secrets.APPLE_CERTIFICATE != '' }}
+        if: env.APPLE_CERTIFICATE != ''
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
@@ -84,7 +88,7 @@ jobs:
         run: npx tauri build --bundles app,dmg
 
       - name: Notarize and staple
-        if: ${{ secrets.APPLE_CERTIFICATE != '' }}
+        if: env.APPLE_CERTIFICATE != ''
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
