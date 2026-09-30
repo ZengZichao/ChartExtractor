@@ -5,6 +5,7 @@
 纯本地离线运行的图表数据提取桌面软件（Tauri v2 + React + TypeScript），帮助科研工作者从论文图表（位图 / PDF）中高效、可复现地提取数值数据。
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](./LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23053349.svg)](https://doi.org/10.5281/zenodo.23053349)
 ![Platform: macOS 10.15+](https://img.shields.io/badge/platform-macOS%2010.15%2B-lightgrey)
 ![Offline](https://img.shields.io/badge/network-100%25%20offline-success)
 
@@ -103,16 +104,26 @@ Copyright © 2026 Zichao Zeng
 
 ## 引用
 
-若本工具对你的研究有帮助，欢迎以下述方式引用（待 Zenodo 归档后将补充 DOI）：
+本软件已归档至 Zenodo，DOI 永久可引用：
+
+- **v0.1.0 版本 DOI**：<https://doi.org/10.5281/zenodo.23053350>
+- **Concept DOI（始终指向最新版）**：<https://doi.org/10.5281/zenodo.23053349>
+- 归档记录：<https://zenodo.org/records/23053350>
+
+若本工具对你的研究有帮助，欢迎以下述方式引用：
 
 ```bibtex
 @software{zeng2026chartextractor,
   author = {Zeng, Zichao},
   title  = {ChartExtractor: an offline chart data extraction tool},
   year   = {2026},
+  version = {v0.1.0},
+  doi    = {10.5281/zenodo.23053350},
   url    = {https://github.com/ZengZichao/ChartExtractor}
 }
 ```
+
+仓库同时提供 [`CITATION.cff`](./CITATION.cff)，GitHub 侧栏的 "Cite this repository" 会直接给出引用格式。
 
 ---
 

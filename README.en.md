@@ -5,6 +5,7 @@
 A fully offline desktop application for extracting numerical data from charts (Tauri v2 + React + TypeScript), built to help researchers extract data from figures in published papers (bitmap / PDF) efficiently and reproducibly.
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](./LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23053349.svg)](https://doi.org/10.5281/zenodo.23053349)
 ![Platform: macOS 10.15+](https://img.shields.io/badge/platform-macOS%2010.15%2B-lightgrey)
 ![Offline](https://img.shields.io/badge/network-100%25%20offline-success)
 
@@ -103,16 +104,26 @@ The curve tracing, grid detection, scatter detection, and axis calibration algor
 
 ## Citation
 
-If this tool helps your research, you can cite it as follows (DOI will be added after Zenodo archiving):
+This software is archived on Zenodo with a permanent citable DOI:
+
+- **v0.1.0 version DOI**: <https://doi.org/10.5281/zenodo.23053350>
+- **Concept DOI (always resolves to the latest version)**: <https://doi.org/10.5281/zenodo.23053349>
+- Archived record: <https://zenodo.org/records/23053350>
+
+If this tool helps your research, you can cite it as follows:
 
 ```bibtex
 @software{zeng2026chartextractor,
   author = {Zeng, Zichao},
   title  = {ChartExtractor: an offline chart data extraction tool},
   year   = {2026},
+  version = {v0.1.0},
+  doi    = {10.5281/zenodo.23053350},
   url    = {https://github.com/ZengZichao/ChartExtractor}
 }
 ```
+
+A [`CITATION.cff`](./CITATION.cff) file is also included, so GitHub's "Cite this repository" panel shows the same citation.
 
 ---
 

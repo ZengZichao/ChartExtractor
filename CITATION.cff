@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+message: "If you use ChartExtractor in your research, please cite it as follows."
+title: "ChartExtractor: an offline chart data extraction tool"
+authors:
+  - family-names: "Zeng"
+    given-names: "Zichao"
+    orcid: "https://orcid.org/0000-0001-6553-970X"
+type: software
+version: 0.1.0
+date-released: "2026-09-16"
+# Concept DOI: it resolves to the latest archived release, so it never needs
+# bumping alongside `version`. The v0.1.0-specific DOI is in preferred-citation.
+doi: "10.5281/zenodo.23053349"
+license: GPL-3.0-or-later
+repository-code: "https://github.com/ZengZichao/ChartExtractor"
+keywords:
+  - chart digitization
+  - data extraction
+  - figure analysis
+  - offline
+  - desktop
+  - tauri
+  - rust
+abstract: >-
+  ChartExtractor is a fully offline desktop application for extracting numerical
+  data from charts in scientific papers (bitmap images and PDF). It calibrates
+  axes from four user-picked reference points with linear or logarithmic affine
+  transforms, traces curves by colour-mask column scanning, detects scatter
+  points by blob clustering, supports manual point editing, grid detection,
+  batch folder processing and project save/restore, and exports xlsx / CSV /
+  JSON with optional metadata comment lines compatible with pandas.read_csv.
+  All processing runs locally: no network calls are made, and no data leaves the
+  machine. The interface is bilingual (Chinese / English) with light and dark
+  themes.
+preferred-citation:
+  type: software
+  title: "ChartExtractor: an offline chart data extraction tool (v0.1.0)"
+  authors:
+    - family-names: "Zeng"
+      given-names: "Zichao"
+      orcid: "https://orcid.org/0000-0001-6553-970X"
+  version: 0.1.0
+  date-released: "2026-09-16"
+  doi: "10.5281/zenodo.23053350"
+  license: GPL-3.0-or-later
+  repository-code: "https://github.com/ZengZichao/ChartExtractor"
