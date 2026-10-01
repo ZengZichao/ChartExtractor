@@ -9,8 +9,10 @@ name: CodeQL
 #   - 每次 push 到 main 与 PR 时运行；
 #   - 每周一 03:00 UTC 定时全量扫描；
 #   - 告警进入仓库 Security → Code scanning 页面。
-# rust 使用 autobuild（CodeQL 注入编译标记后跑 cargo build，与 CI 同源）；
-# javascript-typescript 无需构建（build-mode: none）。
+# rust 与 javascript-typescript 均使用 build-mode: none——当前 CodeQL（2.27+）
+# 对 Rust 走免构建抽取（读取 cargo 元数据），明确不支持 autobuild（实测报
+# "Rust does not support the autobuild build mode"）；javascript-typescript
+# 无需构建。
 
 on:
   push:
@@ -40,7 +42,7 @@ jobs:
           - language: javascript-typescript
             build-mode: none
           - language: rust
-            build-mode: autobuild
+            build-mode: none
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
