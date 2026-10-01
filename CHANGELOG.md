@@ -30,6 +30,11 @@
   并纳入 `npm test` 与 CI 门禁。
 - **Release 改为自动发布**：`release.yml` 此前写死 `draft: true`，打 tag 只生成草稿、
   不公开发布且无任何通知（v0.1.0 当初即手动补发布）。现改为 `draft: false`。
+- **所有第三方 Action 锁定 commit SHA**：`actions/checkout`、`actions/setup-node`、
+  `actions/cache`、`dtolnay/rust-toolchain`、`softprops/action-gh-release` 此前引用
+  可变 tag（`@v4` / `@1.90` / `@v2`），仓库的 Actions 权限也未要求 SHA 锁定，
+  存在「tag 被劫持即向 CI 注入任意代码」的供应链风险。现全部 pin 到完整 SHA，
+  由 Dependabot 的 github-actions 段以聚合 PR 继续更新。
 
 ### 修复
 
@@ -57,6 +62,14 @@
 - **修复 SECURITY.md 的私密上报流程**：文档在「私密上报」标题下却提供了
   「在公开 Issue 中提交」这条路径，安全报告一旦发到 Issue 即已公开。现已移除，
   只保留 GitHub 私有安全公告渠道。
+- **终结 Dependabot 的 glib 更新死循环**：glib 安全告警（GHSA-wrw7-89jp-8q8g，
+  迭代器 soundness，修复版要求 ≥0.20.0）被 tauri 2.x 的 gtk-rs 0.18 依赖链锁死，
+  Dependabot 每轮报 `security_update_not_possible`，Actions 页面常红。
+  现于 `dependabot.yml` 忽略 glib，并在仓库设置中按 tolerable_risk dismiss 该告警
+  （漏洞代码只在 Linux GTK 依赖链上编译，macOS 产物不包含；tauri 迁移后应重新评估）。
+- **Release 缓存瘦身**：`release.yml` 的 `actions/cache` 此前把 `node_modules` 一并
+  缓存，但 `npm ci` 每次都会先删光该目录，这份缓存从未被真正复用。现改为
+  `setup-node` 的 `cache: "npm"` 托管 npm 下载缓存，`actions/cache` 只保留 cargo 目录。
 - 缓存 `cargo` 依赖目录，缩短 CI 冷启动时间。
 - 文档中的 Node 版本要求与实际约束对齐。
 - 新增 `.editorconfig` 与 `.github/CODEOWNERS`。

@@ -28,6 +28,13 @@ updates:
       prefix: "deps(cargo)"
     ignore:
       - update-types: ["version-update:semver-major"]
+      # glib 的安全告警（GHSA-wrw7-89jp-8q8g，VariantStrIter 迭代器 soundness，
+      # 影响范围 >=0.15、<0.20）要求 0.20.0，但 tauri 2.x 依赖 gtk-rs 0.18，
+      # Cargo.lock 只能锁在 0.18.5——Dependabot 每轮都报 security_update_not_possible，
+      # Actions 页面因此常红。该告警已在仓库设置里按 tolerable_risk dismiss：
+      # 相关代码只存在于 Linux GTK 依赖链上，macOS 产物并不编译。tauri 迁移到
+      # gtk-rs 0.20 后应移除本条并重新评估。
+      - dependency-name: "glib"
     groups:
       all:
         patterns:
