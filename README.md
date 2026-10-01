@@ -34,7 +34,7 @@
 
 ### 方式二：从源码构建
 
-前置要求：Node.js ≥ 22（或 ≥ 20.19）、Rust stable 工具链（含对应平台目标）。
+前置要求：Node.js ≥ 22.12（vitest 5 要求）、Rust stable 工具链（含对应平台目标）。
 
 ```bash
 npm install

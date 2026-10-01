@@ -4,9 +4,12 @@
 
 ## 开发环境
 
-- **Node.js** ≥ 22（或 ≥ 20.19）
+- **Node.js** ≥ 22.12（vitest 5 的硬性要求；该约束由 `package.json` 的 `engines.node` 声明）
 - **Rust** stable 工具链（含 `macOS` 目标）
 - 推荐操作系统：macOS 10.15+（当前主要支持平台）
+
+> Node 版本低于 22.12 时 `npm install` 会打印 `EBADENGINE` 警告但**不会失败**，
+> 容易在本地漏掉。CI 已锁定 `22.12` 以保证与本地一致。
 
 ## 本地搭建
 
@@ -20,6 +23,29 @@ npm run dev          # 前端开发（Vite，端口 5173）
 ```bash
 npm run package      # tauri build，生成 .app
 ```
+
+### 已知问题：批量升级依赖时 npm 可能崩溃
+
+`xlsx` 依赖指向 SheetJS 官方 CDN tarball（`cdn.sheetjs.com`）而非 npm registry。
+这条远程 tarball 会触发 npm arborist 的已知缺陷：
+
+```
+npm error Cannot read properties of null (reading 'edgesOut')
+```
+
+表现为 `npm update`、以及一次安装多个 devDependencies 时直接失败。
+绕过方式（二选一）：
+
+```bash
+# 方式一：逐个安装
+npm install --save-dev vite@^8.3.1
+npm install --save-dev vitest@^5.0.2
+
+# 方式二：加 --legacy-peer-deps
+npm install --save-dev vitest@5.0.2 --legacy-peer-deps
+```
+
+`npm install`（不带版本号）与 `npm ci` 不受影响，可正常使用。
 
 ## 常用命令
 
