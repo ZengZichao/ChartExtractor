@@ -59,16 +59,16 @@ scripts/notarize.sh     # Developer ID 签名 + 公证 + 盖章（需自行配�
 
 ## 快捷键
 
-| 快捷键 | 功能 |
-| --- | --- |
-| `Cmd/Ctrl + O` | 导入图片 / PDF |
-| `Cmd/Ctrl + S` | 保存工程 |
-| `Cmd/Ctrl + Z` | 撤销 |
-| `Shift + Cmd/Ctrl + Z` | 重做 |
-| `Delete` | 删除最后一个点 |
-| `空格 / 拖拽` | 平移画布 |
-| `滚轮` | 缩放画布 |
-| `F1` | 帮助 |
+| 快捷键                 | 功能           |
+| ---------------------- | -------------- |
+| `Cmd/Ctrl + O`         | 导入图片 / PDF |
+| `Cmd/Ctrl + S`         | 保存工程       |
+| `Cmd/Ctrl + Z`         | 撤销           |
+| `Shift + Cmd/Ctrl + Z` | 重做           |
+| `Delete`               | 删除最后一个点 |
+| `空格 / 拖拽`          | 平移画布       |
+| `滚轮`                 | 缩放画布       |
+| `F1`                   | 帮助           |
 
 ## 隐私与安全
 
@@ -94,7 +94,7 @@ cargo test           # Rust 命令层单测（在 src-tauri/ 下执行）
 
 Copyright © 2026 Zichao Zeng
 
-本项目以 GNU General Public License v3.0（GPL-3.0）发布。你可以自由使用、修改和分发本软件，但任何分发或衍生作品同样必须以 GPL-3.0 开源。详见 [`LICENSE`](./LICENSE)。
+本项目以 GNU General Public License v3.0（GPL-3.0）发布。你可以自由使用、修改和分发本软件，但任何分发或衍生作品同样必须以 GPL-3.0 开源。许可证正文见 [`LICENSE`](./LICENSE)，本项目的版权与免责声明声明见 [`COPYRIGHT`](./COPYRIGHT)。
 
 ## 致谢
 

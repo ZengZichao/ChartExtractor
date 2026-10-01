@@ -23,8 +23,7 @@ const STORAGE_KEY = "chart-extractor-theme";
 function getInitialTheme(): ThemeMode {
   try {
     const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-    if (stored === "light" || stored === "dark" || stored === "system")
-      return stored;
+    if (stored === "light" || stored === "dark" || stored === "system") return stored;
   } catch {
     /* localStorage 不可用时退回 system */
   }

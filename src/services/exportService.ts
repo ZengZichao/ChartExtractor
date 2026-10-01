@@ -25,12 +25,7 @@
  * CSV 文本通过 buildCSVText 产出，UTF-8 走 write_text_file、GBK 走 write_text_encoded。
  */
 import { appApi } from "../platform/api";
-import type {
-  Dataset,
-  ExportOptions,
-  CalibrationConfig,
-  DetectionParams,
-} from "../types";
+import type { Dataset, ExportOptions, CalibrationConfig, DetectionParams } from "../types";
 // xlsx 仅在导出 xlsx 时动态 import（避免进首屏包）
 export class ExportService {
   /**
@@ -52,17 +47,9 @@ export class ExportService {
       case "xlsx":
         return this.exportXLSX(datasets, options, calibration);
       case "json":
-        return this.exportJSON(
-          datasets,
-          options,
-          calibration,
-          metadata,
-          detection,
-        );
+        return this.exportJSON(datasets, options, calibration, metadata, detection);
       default:
-        throw new Error(
-          `不支持的 Blob 导出格式: ${options.format}（CSV 请使用 buildCSVText）`,
-        );
+        throw new Error(`不支持的 Blob 导出格式: ${options.format}（CSV 请使用 buildCSVText）`);
     }
   }
   /**
@@ -136,17 +123,13 @@ export class ExportService {
       }
       rows.sort((a, b) => a.x - b.x);
       if (options.includeHeader) {
-        lines.push(
-          [xHeader, ...dsList.map((d) => this.quoteCsv(d.name))].join(","),
-        );
+        lines.push([xHeader, ...dsList.map((d) => this.quoteCsv(d.name))].join(","));
       }
       for (const row of rows) {
         lines.push(
           [
             fmt(row.x),
-            ...dsList.map((d) =>
-              row.ys.get(d.id) != null ? fmt(row.ys.get(d.id)!) : "",
-            ),
+            ...dsList.map((d) => (row.ys.get(d.id) != null ? fmt(row.ys.get(d.id)!) : "")),
           ].join(","),
         );
       }
@@ -165,10 +148,7 @@ export class ExportService {
     return lines.join("\n");
   }
   /** 按 options.datasetIds 过滤数据集（缺省/空 = 全部） */
-  private static selectDatasets(
-    datasets: Dataset[],
-    options: ExportOptions,
-  ): Dataset[] {
+  private static selectDatasets(datasets: Dataset[], options: ExportOptions): Dataset[] {
     const ids = options.datasetIds;
     if (ids && ids.length > 0) {
       return datasets.filter((d) => ids.includes(d.id) && d.points.length > 0);
@@ -195,7 +175,8 @@ export class ExportService {
   private static sanitizeSheetName(raw: string, used: Set<string>): string {
     let base = (raw || "数据")
       .replace(/[:\\/?*[\]]/g, "_")
-      .replace(/^'+|'+$/g, "").trim();
+      .replace(/^'+|'+$/g, "")
+      .trim();
     if (!base) base = "数据";
     base = base.substring(0, 31);
     let name = base;
@@ -226,14 +207,8 @@ export class ExportService {
         data.push([xHeader, yHeader]);
       }
       for (const pt of dataset.points) {
-        const x =
-          options.precision > 0
-            ? parseFloat(pt.x.toFixed(options.precision))
-            : pt.x;
-        const y =
-          options.precision > 0
-            ? parseFloat(pt.y.toFixed(options.precision))
-            : pt.y;
+        const x = options.precision > 0 ? parseFloat(pt.x.toFixed(options.precision)) : pt.x;
+        const y = options.precision > 0 ? parseFloat(pt.y.toFixed(options.precision)) : pt.y;
         data.push([x, y]);
       }
       const ws = XLSX.utils.aoa_to_sheet(data);
@@ -263,9 +238,7 @@ export class ExportService {
         appVersion: metadata?.appVersion ?? "unknown",
         extractedAt: metadata?.extractedAt ?? new Date().toISOString(),
         precision: options.precision,
-        totalPoints:
-          metadata?.totalPoints ??
-          datasets.reduce((s, d) => s + d.points.length, 0),
+        totalPoints: metadata?.totalPoints ?? datasets.reduce((s, d) => s + d.points.length, 0),
         calibrationResidual: metadata?.residual ?? 0,
         offline: true,
         note: "All data extracted locally. No data was uploaded to any server.",
@@ -275,14 +248,8 @@ export class ExportService {
         color: ds.color,
         pointCount: ds.points.length,
         points: ds.points.map((pt) => ({
-          x:
-            options.precision > 0
-              ? parseFloat(pt.x.toFixed(options.precision))
-              : pt.x,
-          y:
-            options.precision > 0
-              ? parseFloat(pt.y.toFixed(options.precision))
-              : pt.y,
+          x: options.precision > 0 ? parseFloat(pt.x.toFixed(options.precision)) : pt.x,
+          y: options.precision > 0 ? parseFloat(pt.y.toFixed(options.precision)) : pt.y,
         })),
       })),
     };

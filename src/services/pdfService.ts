@@ -26,14 +26,10 @@ export interface PdfImportResult {
   page: number; // 实际渲染的页号
 }
 /** 将 PDF 字节渲染为图片 */
-export async function importPdf(
-  bytes: Uint8Array,
-  pageNumber = 1,
-): Promise<PdfImportResult> {
+export async function importPdf(bytes: Uint8Array, pageNumber = 1): Promise<PdfImportResult> {
   // 动态导入，确保仅在使用 PDF 时加载 pdfjs（懒加载）
   const pdfjsLib: any = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  const workerMod: any =
-    await import("pdfjs-dist/legacy/build/pdf.worker.min.mjs?url");
+  const workerMod: any = await import("pdfjs-dist/legacy/build/pdf.worker.min.mjs?url");
   pdfjsLib.GlobalWorkerOptions.workerSrc = workerMod.default;
   const doc = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
   try {
@@ -56,10 +52,7 @@ export async function importPdf(
     if (!ctx) throw new Error("无法创建画布上下文");
     await page.render({ canvasContext: ctx, viewport }).promise;
     const blob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob(
-        (b) => (b ? resolve(b) : reject(new Error("PDF 页面渲染失败"))),
-        "image/png",
-      );
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("PDF 页面渲染失败"))), "image/png");
     });
     return { blob, numPages: doc.numPages, page: pageNum };
   } finally {

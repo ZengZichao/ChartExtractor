@@ -49,12 +49,7 @@ export function mult2x2Vec(m: number[], v: number[]): number[] {
   return [m[0] * v[0] + m[1] * v[1], m[2] * v[0] + m[3] * v[1]];
 }
 /** 2D 距离平方 */
-export function sqDist2d(
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-): number {
+export function sqDist2d(x1: number, y1: number, x2: number, y2: number): number {
   return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 }
 /** 2D 距离 */
@@ -70,9 +65,7 @@ export function dist3d(
   y2: number,
   z2: number,
 ): number {
-  return Math.sqrt(
-    (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2),
-  );
+  return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
 }
 /** RGB 颜色距离 */
 export function colorDistance(
@@ -172,10 +165,10 @@ export function csplineInterp(cs: CubicSpline, x: number): number | null {
   const a = (hi_x - x) / h;
   const b = (x - lo_x) / h;
   return (
-    mi * a * a * a * h * h / 6 +
-    mi1 * b * b * b * h * h / 6 +
-    (cs.y[i] - mi * h * h / 6) * a +
-    (cs.y[i + 1] - mi1 * h * h / 6) * b
+    (mi * a * a * a * h * h) / 6 +
+    (mi1 * b * b * b * h * h) / 6 +
+    (cs.y[i] - (mi * h * h) / 6) * a +
+    (cs.y[i + 1] - (mi1 * h * h) / 6) * b
   );
 }
 /** 移动平均平滑 */
@@ -186,11 +179,7 @@ export function movingAverage(values: number[], windowSize: number): number[] {
   for (let i = 0; i < values.length; i++) {
     let sum = 0;
     let count = 0;
-    for (
-      let j = Math.max(0, i - half);
-      j <= Math.min(values.length - 1, i + half);
-      j++
-    ) {
+    for (let j = Math.max(0, i - half); j <= Math.min(values.length - 1, i + half); j++) {
       sum += values[j];
       count++;
     }

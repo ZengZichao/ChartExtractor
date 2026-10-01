@@ -27,18 +27,12 @@ import { DEFAULT_FG_COLOR } from "../core/colorFilter"; // 默认前景色单一
  * 版本迁移链：key 为「当前版本号」，value 将该版本 raw 升级到下一版本。
  * 未来新增格式版本时，在此追加条目即可（如 '1.0' -> '1.1'）。
  */
-export const MIGRATIONS: Record<
-  string,
-  (raw: any) => { data: any; nextVersion: string }
-> = {
+export const MIGRATIONS: Record<string, (raw: any) => { data: any; nextVersion: string }> = {
   // 示例（尚未定义后续版本）
   // '1.0': (raw) => ({ data: { ...raw, newField: raw.newField ?? default }, nextVersion: '1.1' }),
 };
 /** 运行迁移链，返回最终数据与版本号 */
-export function runMigrations(
-  raw: any,
-  fromVersion: string,
-): { data: any; version: string } {
+export function runMigrations(raw: any, fromVersion: string): { data: any; version: string } {
   let data = raw;
   let version = fromVersion;
   let guard = 0;
@@ -55,9 +49,7 @@ export function normalizeProjectData(raw: any): ProjectData {
   // 标定点完整性校验：旧工程点数≠4 会导致标定矩阵构造错误，
   // 归一化阶段若点数不为 4 且不为 0，则清空 points（需重新标定）而非抛异常，
   // 保证前向兼容——旧工程加载后 UI 显示为未标定状态，而非崩溃。
-  const rawPoints: any[] = Array.isArray(raw?.calibration?.points)
-    ? raw.calibration.points
-    : [];
+  const rawPoints: any[] = Array.isArray(raw?.calibration?.points) ? raw.calibration.points : [];
   const validPoints = rawPoints.length === 4 ? rawPoints : [];
   // 按 role ?? index 归一，保证旧工程缺 role 字段时按索引兜底
   const ROLE_BY_INDEX = ["xmin", "xmax", "ymin", "ymax"];

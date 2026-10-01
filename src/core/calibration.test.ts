@@ -8,13 +8,7 @@ import { Calibration } from "./calibration";
 import type { CalibrationConfig, CalibrationPoint } from "../types";
 /** 构造一个轴对齐 4 点标定配置（左上=min/max 角，右下=min/min 角） */
 function makeLinearConfig(): CalibrationConfig {
-  const pt = (
-    px: number,
-    py: number,
-    dx: number,
-    dy: number,
-    label: string,
-  ): CalibrationPoint => ({
+  const pt = (px: number, py: number, dx: number, dy: number, label: string): CalibrationPoint => ({
     px,
     py,
     dx,

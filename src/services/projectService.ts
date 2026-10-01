@@ -43,11 +43,7 @@ export class ProjectService {
     originalFileName: string,
   ): Promise<boolean> {
     try {
-      const zipBase64 = await this.buildProjectZip(
-        data,
-        imageBlob,
-        originalFileName,
-      );
+      const zipBase64 = await this.buildProjectZip(data, imageBlob, originalFileName);
       // 经主进程写盘并在覆盖前备份旧文件（.prj.bak）
       const result = await appApi.writeWithBackup(filePath, zipBase64);
       return result.success;
@@ -86,21 +82,24 @@ export class ProjectService {
   /**
    * 解析工程 ZIP（base64）→ 归一化数据、图像。loadProject 与 会话恢复共用。
    */
-  static async parseProjectZip(zipBase64: string): Promise<{
-    data: ProjectData;
-    imageBlob: Blob;
-    manifest: ProjectManifest;
-  } | { ok: false; reason: string; errorCode: string }> {
+  static async parseProjectZip(zipBase64: string): Promise<
+    | {
+        data: ProjectData;
+        imageBlob: Blob;
+        manifest: ProjectManifest;
+      }
+    | { ok: false; reason: string; errorCode: string }
+  > {
     try {
       const { default: JSZip } = await import("jszip");
       const zip = await JSZip.loadAsync(zipBase64, { base64: true });
       const manifestFile = zip.file("manifest.json");
-      if (!manifestFile) return { ok: false, reason: "MISSING_MANIFEST", errorCode: "MISSING_MANIFEST" };
-      const manifest: ProjectManifest = JSON.parse(
-        await manifestFile.async("string"),
-      );
+      if (!manifestFile)
+        return { ok: false, reason: "MISSING_MANIFEST", errorCode: "MISSING_MANIFEST" };
+      const manifest: ProjectManifest = JSON.parse(await manifestFile.async("string"));
       const projectFile = zip.file("project.json");
-      if (!projectFile) return { ok: false, reason: "MISSING_PROJECT_JSON", errorCode: "MISSING_PROJECT_JSON" };
+      if (!projectFile)
+        return { ok: false, reason: "MISSING_PROJECT_JSON", errorCode: "MISSING_PROJECT_JSON" };
       const rawData = JSON.parse(await projectFile.async("string"));
       // 版本迁移、前向兼容归一化
       const { data: migratedRaw, version } = runMigrations(
@@ -115,9 +114,7 @@ export class ProjectService {
         (k) => k.startsWith("images/") && !zip.files[k].dir,
       );
       if (imageFiles.length === 0) return { ok: false, reason: "NO_IMAGE", errorCode: "NO_IMAGE" };
-      const preferred = imageFiles.find((k) =>
-        /\.(png|jpe?g|bmp|webp|gif|svg)$/i.test(k),
-      );
+      const preferred = imageFiles.find((k) => /\.(png|jpe?g|bmp|webp|gif|svg)$/i.test(k));
       const imageKey = preferred ?? imageFiles[0];
       const imageFile = zip.file(imageKey);
       if (!imageFile) return { ok: false, reason: "IMAGE_READ_FAIL", errorCode: "IMAGE_READ_FAIL" };
@@ -141,11 +138,15 @@ export class ProjectService {
   /**
    * 加载工程文件（含版本迁移与备份）
    */
-  static async loadProject(filePath: string): Promise<{
-    data: ProjectData;
-    imageBlob: Blob;
-    manifest: ProjectManifest;
-  } | { ok: false; reason: string; errorCode: string } | null> {
+  static async loadProject(filePath: string): Promise<
+    | {
+        data: ProjectData;
+        imageBlob: Blob;
+        manifest: ProjectManifest;
+      }
+    | { ok: false; reason: string; errorCode: string }
+    | null
+  > {
     try {
       const result = await appApi.readFile(filePath);
       if (!result.success || !result.data)

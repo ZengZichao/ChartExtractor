@@ -142,14 +142,14 @@ For processing a series of charts that share the same coordinate system:
 
 In the "Export" step you can configure:
 
-| Option | Description |
-| --- | --- |
-| **Select datasets** | Tick the datasets to export (multi-select) |
-| **X / Y column names** | Custom output column names |
-| **Merge mode** | **Long** `dataset,X,Y` (pandas-ready) or **Wide** (aligned by X) |
-| **Encoding** | UTF-8 (recommended) / GBK (legacy WPS; text-based formats only) |
-| **Decimal precision** | Number of decimal places in the output |
-| **Include header row** | Whether to write column names |
+| Option                     | Description                                                                                                                                                                   |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Select datasets**        | Tick the datasets to export (multi-select)                                                                                                                                    |
+| **X / Y column names**     | Custom output column names                                                                                                                                                    |
+| **Merge mode**             | **Long** `dataset,X,Y` (pandas-ready) or **Wide** (aligned by X)                                                                                                              |
+| **Encoding**               | UTF-8 (recommended) / GBK (legacy WPS; text-based formats only)                                                                                                               |
+| **Decimal precision**      | Number of decimal places in the output                                                                                                                                        |
+| **Include header row**     | Whether to write column names                                                                                                                                                 |
 | **Metadata comment lines** | Writes `#` comments (axis names, units, source…) at the top; keep it off for directly parseable `pandas.read_csv` input (use `comment='#'` when reading to keep the metadata) |
 
 - **Formats**: xlsx (one sheet per dataset) / CSV / JSON (JSON always includes dataset metadata).
@@ -168,17 +168,17 @@ In the "Export" step you can configure:
 
 ## 12. Keyboard Shortcuts
 
-| Shortcut | Action |
-| --- | --- |
-| `Cmd/Ctrl + O` | Import image / PDF |
-| `Cmd/Ctrl + V` | Paste screenshot |
-| `Cmd/Ctrl + S` | Save project |
-| `Cmd/Ctrl + Z` | Undo |
-| `Shift + Cmd/Ctrl + Z` | Redo |
-| `Delete` | Delete last point |
-| `Space (hold) / drag` | Pan canvas |
-| `Scroll` | Zoom canvas |
-| `F1` | Shortcuts & help |
+| Shortcut               | Action             |
+| ---------------------- | ------------------ |
+| `Cmd/Ctrl + O`         | Import image / PDF |
+| `Cmd/Ctrl + V`         | Paste screenshot   |
+| `Cmd/Ctrl + S`         | Save project       |
+| `Cmd/Ctrl + Z`         | Undo               |
+| `Shift + Cmd/Ctrl + Z` | Redo               |
+| `Delete`               | Delete last point  |
+| `Space (hold) / drag`  | Pan canvas         |
+| `Scroll`               | Zoom canvas        |
+| `F1`                   | Shortcuts & help   |
 
 ## 13. FAQ
 

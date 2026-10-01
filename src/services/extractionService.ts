@@ -21,11 +21,7 @@
  */
 import { ColorFilter, type BinaryData } from "../core/colorFilter";
 import { CurveTracker, type CurveTrackerParams } from "../core/curveTracker";
-import {
-  BlobDetector,
-  type BlobDetectorParams,
-  type BlobResult,
-} from "../core/blobDetector";
+import { BlobDetector, type BlobDetectorParams, type BlobResult } from "../core/blobDetector";
 import {
   GridDetector,
   type GridDetectorParams,
@@ -63,18 +59,10 @@ export function removeGridNoise(
   gridLines: GridDetectionResult,
   tolerance: number = 3,
 ): Array<{ x: number; y: number }> {
-  if (
-    gridLines.verticalLines.length === 0 &&
-    gridLines.horizontalLines.length === 0
-  )
-    return points;
+  if (gridLines.verticalLines.length === 0 && gridLines.horizontalLines.length === 0) return points;
   return points.filter((pt) => {
-    const onVertical = gridLines.verticalLines.some(
-      (vx) => Math.abs(pt.x - vx) <= tolerance,
-    );
-    const onHorizontal = gridLines.horizontalLines.some(
-      (hy) => Math.abs(pt.y - hy) <= tolerance,
-    );
+    const onVertical = gridLines.verticalLines.some((vx) => Math.abs(pt.x - vx) <= tolerance);
+    const onHorizontal = gridLines.horizontalLines.some((hy) => Math.abs(pt.y - hy) <= tolerance);
     return !(onVertical || onHorizontal);
   });
 }
@@ -100,10 +88,7 @@ export function clusterBlobsByColor(
   for (const blob of blobs) {
     // 采样 blob 中心像素颜色
     const cx = Math.max(0, Math.min(w - 1, Math.round(blob.centroid.x)));
-    const cy = Math.max(
-      0,
-      Math.min(imageData.height - 1, Math.round(blob.centroid.y)),
-    );
+    const cy = Math.max(0, Math.min(imageData.height - 1, Math.round(blob.centroid.y)));
     const idx = (cy * w + cx) * 4;
     const r = data[idx];
     const g = data[idx + 1];

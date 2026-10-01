@@ -112,11 +112,7 @@ export class CurveTracker {
         const newX = xPoints[xxi][0];
         const newY = xPoints[xxi][1];
         if (newX > oldX + 2 * xStep) break;
-        if (
-          xPoints[xxi][2] &&
-          Math.abs(newX - oldX) <= xStep &&
-          Math.abs(newY - oldY) <= yStep
-        ) {
+        if (xPoints[xxi][2] && Math.abs(newX - oldX) <= xStep && Math.abs(newY - oldY) <= yStep) {
           avgX = (avgX * matches + newX) / (matches + 1);
           avgY = (avgY * matches + newY) / (matches + 1);
           matches++;
@@ -241,11 +237,7 @@ export class CurveTracker {
         const newX = xPoints[xxi][0];
         const newY = xPoints[xxi][1];
         if (newX > oldX + 2 * xStep) break;
-        if (
-          xPoints[xxi][2] &&
-          Math.abs(newX - oldX) <= xStep &&
-          Math.abs(newY - oldY) <= yStep
-        ) {
+        if (xPoints[xxi][2] && Math.abs(newX - oldX) <= xStep && Math.abs(newY - oldY) <= yStep) {
           avgX = (avgX * matches + newX) / (matches + 1);
           avgY = (avgY * matches + newY) / (matches + 1);
           matches++;

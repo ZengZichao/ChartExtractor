@@ -48,24 +48,16 @@ describe("：EMPTY 状态机收紧", () => {
     }
   });
   it("EMPTY 下任何非 import 事件被守卫拦截且原因可读", () => {
-    for (const ev of [
-      "startCalibrate",
-      "enterExtract",
-      "openExport",
-    ] as UXEvent[]) {
+    for (const ev of ["startCalibrate", "enterExtract", "openExport"] as UXEvent[]) {
       expect(guard("EMPTY", ev, noFacts)).toBe("请先导入图像");
     }
   });
   it("IMPORT_READY 无图时 startCalibrate 被拦截，有图放行", () => {
-    expect(guard("IMAGE_READY", "startCalibrate", noFacts)).toBe(
-      "请先导入图像",
-    );
+    expect(guard("IMAGE_READY", "startCalibrate", noFacts)).toBe("请先导入图像");
     expect(guard("IMAGE_READY", "startCalibrate", withImage)).toBeNull();
   });
   it("CALIBRATED 无数据时 openExport 被拦截，有数据放行", () => {
-    expect(guard("CALIBRATED", "openExport", calibrated)).toBe(
-      "尚未取点，无数据可导出",
-    );
+    expect(guard("CALIBRATED", "openExport", calibrated)).toBe("尚未取点，无数据可导出");
     expect(guard("CALIBRATED", "openExport", withPoints)).toBeNull();
   });
 });

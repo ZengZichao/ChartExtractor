@@ -32,3 +32,25 @@ updates:
       all:
         patterns:
           - "*"
+
+  # GitHub Actions 此前完全没有升级通道：ci.yml / release.yml 里用到的
+  # actions/checkout、actions/setup-node、actions/cache、softprops/action-gh-release
+  # 以及 dtolnay/rust-toolchain 都只会在本地腐化，不会有人收到提醒。
+  #
+  # 这里刻意「不」屏蔽 semver-major，与上面两个生态相反：
+  #   - npm / cargo 屏蔽 major 是为了保护应用源码不被推到破坏性大版本；
+  #   - action 的 major 升级通常只是换 Node 运行时，且经常是**必须**跟进的
+  #     （旧 Node 运行时被弃用后，action 会直接失败或失去安全更新）。
+  #     一刀切屏蔽 major 等于让这一段形同虚设。
+  # 风险由 groups 收敛：所有 action 升级聚合成单个 PR，由 CI 验证后再合并。
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "deps(actions)"
+    groups:
+      actions:
+        patterns:
+          - "*"

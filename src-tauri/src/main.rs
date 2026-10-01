@@ -16,29 +16,29 @@
 // 统一收口到 Rust 命令层，前端经 invoke 调用，保证离线与最小权限。
 mod commands;
 fn main() {
- tauri::Builder::default()
- .plugin(tauri_plugin_dialog::init())
- .plugin(tauri_plugin_opener::init())
- .invoke_handler(tauri::generate_handler![
- commands::open_file,
- commands::save_file,
- commands::read_file,
- commands::write_file,
- commands::write_with_backup,
- commands::read_text_file,
- commands::write_text_file,
- commands::write_text_encoded,
- commands::file_stat,
- commands::open_path,
- commands::get_user_data_path,
- commands::get_recent_files,
- commands::add_recent_file,
- commands::save_autosave,
- commands::load_autosave,
- commands::clear_autosave,
- commands::open_directory,
- commands::list_directory,
- ])
- .run(tauri::generate_context!())
- .expect("error while running tauri application");
+    tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
+        .invoke_handler(tauri::generate_handler![
+            commands::open_file,
+            commands::save_file,
+            commands::read_file,
+            commands::write_file,
+            commands::write_with_backup,
+            commands::read_text_file,
+            commands::write_text_file,
+            commands::write_text_encoded,
+            commands::file_stat,
+            commands::open_path,
+            commands::get_user_data_path,
+            commands::get_recent_files,
+            commands::add_recent_file,
+            commands::save_autosave,
+            commands::load_autosave,
+            commands::clear_autosave,
+            commands::open_directory,
+            commands::list_directory,
+        ])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }

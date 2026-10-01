@@ -19,10 +19,7 @@ function ContextMenuContent({
 }: React.ComponentProps<typeof ContextMenuPrimitive.Content>) {
   return (
     <ContextMenuPrimitive.Portal>
-      <ContextMenuPrimitive.Content
-        className={cn("context-menu", className)}
-        {...props}
-      />
+      <ContextMenuPrimitive.Content className={cn("context-menu", className)} {...props} />
     </ContextMenuPrimitive.Portal>
   );
 }
@@ -72,10 +69,7 @@ function ContextMenuRadioItem({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.RadioItem>) {
   return (
-    <ContextMenuPrimitive.RadioItem
-      className={cn("context-menu-item", className)}
-      {...props}
-    >
+    <ContextMenuPrimitive.RadioItem className={cn("context-menu-item", className)} {...props}>
       <span className="context-menu-indicator">
         <ContextMenuPrimitive.ItemIndicator>
           <CircleIcon size={8} fill="currentColor" />
@@ -89,19 +83,13 @@ const ContextMenuLabel = ({
   className,
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Label>) => (
-  <ContextMenuPrimitive.Label
-    className={cn("dropdown-label", className)}
-    {...props}
-  />
+  <ContextMenuPrimitive.Label className={cn("dropdown-label", className)} {...props} />
 );
 const ContextMenuSeparator = ({
   className,
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Separator>) => (
-  <ContextMenuPrimitive.Separator
-    className={cn("context-menu-divider", className)}
-    {...props}
-  />
+  <ContextMenuPrimitive.Separator className={cn("context-menu-divider", className)} {...props} />
 );
 function ContextMenuSubTrigger({
   className,
@@ -109,10 +97,7 @@ function ContextMenuSubTrigger({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.SubTrigger>) {
   return (
-    <ContextMenuPrimitive.SubTrigger
-      className={cn("context-menu-item", className)}
-      {...props}
-    >
+    <ContextMenuPrimitive.SubTrigger className={cn("context-menu-item", className)} {...props}>
       {children}
       <ChevronRightIcon size={14} style={{ marginLeft: "auto" }} />
     </ContextMenuPrimitive.SubTrigger>
@@ -124,10 +109,7 @@ function ContextMenuSubContent({
 }: React.ComponentProps<typeof ContextMenuPrimitive.SubContent>) {
   return (
     <ContextMenuPrimitive.Portal>
-      <ContextMenuPrimitive.SubContent
-        className={cn("context-menu", className)}
-        {...props}
-      />
+      <ContextMenuPrimitive.SubContent className={cn("context-menu", className)} {...props} />
     </ContextMenuPrimitive.Portal>
   );
 }

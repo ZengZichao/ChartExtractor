@@ -59,16 +59,16 @@ For details (batch processing, project management, keyboard shortcuts, troublesh
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-| --- | --- |
-| `Cmd/Ctrl + O` | Import image / PDF |
-| `Cmd/Ctrl + S` | Save project |
-| `Cmd/Ctrl + Z` | Undo |
-| `Shift + Cmd/Ctrl + Z` | Redo |
-| `Delete` | Delete last point |
-| `Space / drag` | Pan canvas |
-| `Scroll` | Zoom canvas |
-| `F1` | Help |
+| Shortcut               | Action             |
+| ---------------------- | ------------------ |
+| `Cmd/Ctrl + O`         | Import image / PDF |
+| `Cmd/Ctrl + S`         | Save project       |
+| `Cmd/Ctrl + Z`         | Undo               |
+| `Shift + Cmd/Ctrl + Z` | Redo               |
+| `Delete`               | Delete last point  |
+| `Space / drag`         | Pan canvas         |
+| `Scroll`               | Zoom canvas        |
+| `F1`                   | Help               |
 
 ## Privacy & Security
 
@@ -94,7 +94,7 @@ cargo test           # Rust command-layer unit tests (run inside src-tauri/)
 
 Copyright © 2026 Zichao Zeng
 
-Released under the GNU General Public License v3.0 (GPL-3.0). You are free to use, modify, and distribute this software, but any distribution or derivative work must also be licensed under GPL-3.0. See [`LICENSE`](./LICENSE) for details.
+Released under the GNU General Public License v3.0 (GPL-3.0). You are free to use, modify, and distribute this software, but any distribution or derivative work must also be licensed under GPL-3.0. See [`LICENSE`](./LICENSE) for the license text and [`COPYRIGHT`](./COPYRIGHT) for the project copyright notice.
 
 ## Acknowledgements
 

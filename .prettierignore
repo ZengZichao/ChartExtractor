@@ -1,0 +1,16 @@
+# 依赖锁：由包管理器生成，格式化会破坏校验与可复现性
+package-lock.json
+src-tauri/Cargo.lock
+
+# 构建产物
+node_modules/
+dist/
+release/
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# 二进制资源：prettier 不处理，但显式列出以免将来误配
+*.png
+*.icns
+*.ico
+*.svg

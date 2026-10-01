@@ -1,12 +1,28 @@
 name: CI
 
 on:
+  # 只在 main 上跑 push；功能分支交给下面的 pull_request。
+  # 否则每个分支推送都会同时命中 push + pull_request，同一 commit 跑两遍。
   push:
+    branches: [main]
   pull_request:
 
+# 同一分支出现新提交时取消仍在运行的旧 run。macOS runner 上 `tauri build`
+# 带 lto + codegen-units=1，单次并不便宜，排队等待是纯浪费。
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# 最小权限：CI 全程只读仓库内容，不需要写权限。
+permissions:
+  contents: read
+
 jobs:
-  build-and-scan:
+  # 快速门禁：格式、lint、类型、单测。故意拆成独立 job，
+  # 这样 clippy/fmt 失败能在几分钟内暴露，而不是等 tauri build 跑完。
+  lint:
     runs-on: macos-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -14,29 +30,78 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          # vitest 5 要求 node ^22.12.0 || ^24 || >=26；锁到 22.12+ 避免 engine 漂移
-          node-version: '22.12'
+          # 版本单一来源：.nvmrc，与 package.json 的 engines.node 保持一致
+          node-version-file: ".nvmrc"
+          cache: "npm"
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.90
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: ${{ runner.os }}-cargo-lint-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-lint-
 
       - name: Install dependencies
         run: npm ci
 
+      - name: Format check (prettier)
+        run: npm run format:check
+
+      - name: Rust format check
+        run: cargo fmt --manifest-path src-tauri/Cargo.toml --all -- --check
+
+      - name: Rust lint (clippy)
+        run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --all-features -- -D warnings
+
       - name: Type check (strict)
         run: npm run typecheck
+
+      - name: Unit tests + offline/i18n red lines
+        run: npm test
+
+      - name: Rust unit tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml
+
+  # 昂贵门禁：完整打包，确保 .app 真的能构建出来。
+  build-and-scan:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@1.90
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-build-
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build renderer
         run: npm run build:renderer
 
       - name: Build Tauri app (.app)
         run: npm run package
-
-      - name: Offline privacy scan
-        run: npm run lint:offline
-
-      - name: i18n integrity scan
-        run: npm run lint:i18n
-
-      - name: Unit tests + offline/i18n red lines
-        run: npm test

@@ -39,9 +39,7 @@ for (const f of files) {
     if (m) {
       violations++;
       const line = text.slice(0, m.index).split("\n").length;
-      console.error(
-        `✗ ${path.relative(ROOT, f)}:${line} 禁止的联网模式: ${label}`,
-      );
+      console.error(`✗ ${path.relative(ROOT, f)}:${line} 禁止的联网模式: ${label}`);
     }
   }
 }
@@ -51,6 +49,4 @@ if (violations > 0) {
   );
   process.exit(1);
 }
-console.log(
-  `✓ 离线隐私红线扫描通过：未发现 src/ 中的联网调用模式（扫描 ${files.length} 个文件）`,
-);
+console.log(`✓ 离线隐私红线扫描通过：未发现 src/ 中的联网调用模式（扫描 ${files.length} 个文件）`);
