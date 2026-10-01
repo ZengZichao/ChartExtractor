@@ -70,6 +70,11 @@
 - **Release 缓存瘦身**：`release.yml` 的 `actions/cache` 此前把 `node_modules` 一并
   缓存，但 `npm ci` 每次都会先删光该目录，这份缓存从未被真正复用。现改为
   `setup-node` 的 `cache: "npm"` 托管 npm 下载缓存，`actions/cache` 只保留 cargo 目录。
+- **接入 CodeQL 静态安全扫描**：仓库此前没有任何代码扫描（code-scanning API 显示
+  "no analysis found"，`build-and-scan` 里的 "scan" 一直名不副实）。新增
+  `.github/workflows/codeql.yml`，对 `javascript-typescript`（前端）与 `rust`
+  （Tauri 后端）随 push / PR 分析并每周一定时全量扫描；未走默认设置是因为其
+  接口暂不接受 rust，无法覆盖后端。
 - 缓存 `cargo` 依赖目录，缩短 CI 冷启动时间。
 - 文档中的 Node 版本要求与实际约束对齐。
 - 新增 `.editorconfig` 与 `.github/CODEOWNERS`。

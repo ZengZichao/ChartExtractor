@@ -1,0 +1,57 @@
+name: CodeQL
+
+# 仓库此前没有任何静态安全扫描（code-scanning API 返回 "no analysis found"，
+# 而 job 名 build-and-scan 里的 "scan" 一直名不副实）。
+# 这里用「高级设置」（仓库内 workflow）而非默认设置，因为默认设置的 PATCH 接口
+# 不接受 rust（422：not a possible value），无法覆盖 Tauri 的 Rust 后端。
+#
+# 对 javascript-typescript（前端）与 rust（src-tauri 后端）做 CodeQL 分析：
+#   - 每次 push 到 main 与 PR 时运行；
+#   - 每周一 03:00 UTC 定时全量扫描；
+#   - 告警进入仓库 Security → Code scanning 页面。
+# rust 使用 autobuild（CodeQL 注入编译标记后跑 cargo build，与 CI 同源）；
+# javascript-typescript 无需构建（build-mode: none）。
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * 1"
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: macos-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: javascript-typescript
+            build-mode: none
+          - language: rust
+            build-mode: autobuild
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@1190a975f95ce23525efb6a3fc21ea29567c1b52 # v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@1190a975f95ce23525efb6a3fc21ea29567c1b52 # v3
+        with:
+          category: "/language:${{ matrix.language }}"
