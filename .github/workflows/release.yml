@@ -17,6 +17,9 @@ name: Release
 #     APPLE_TEAM_ID                Apple Developer Team ID（10 位大写字母数字）
 #
 #   本地手动公证可参考 scripts/notarize.sh；本工作流使用 xcrun notarytool 直接公证。
+#
+# 所有第三方 action 均锁定到完整 commit SHA（防止可变 tag 被劫持）；
+# dependabot.yml 的 github-actions 生态段会以聚合 PR 的形式更新这些 SHA。
 
 on:
   push:
@@ -43,26 +46,28 @@ jobs:
       APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           # 版本单一来源：.nvmrc（与 ci.yml、package.json engines 一致）
           node-version-file: ".nvmrc"
+          # npm 下载缓存交给 setup-node 托管；不要把 node_modules 塞进下面的
+          # actions/cache——npm ci 每次都会先删光它，缓存纯属浪费空间和恢复时间
+          cache: "npm"
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@1.90
+        uses: dtolnay/rust-toolchain@49fda20b3f489226feadfba7767be1db54e2cee1 # 1.90（分支头，跟踪 1.90.x 补丁版）
 
-      - name: Cache cargo / npm
-        uses: actions/cache@v4
+      - name: Cache cargo
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             src-tauri/target
-            node_modules
-          key: ${{ runner.os }}-release-${{ hashFiles('**/package-lock.json', 'src-tauri/Cargo.lock') }}
+          key: ${{ runner.os }}-release-${{ hashFiles('src-tauri/Cargo.lock') }}
 
       - name: Install npm dependencies
         run: npm ci
@@ -115,7 +120,7 @@ jobs:
           done
 
       - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           # 此前写死 draft: true：打 tag 只生成草稿，既不公开发布，
           # 也没有任何通知提醒你「有草稿躺着」——v0.1.0 当初就是手动补发布的。
