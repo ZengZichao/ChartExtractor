@@ -42,7 +42,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          # 与 ci.yml 保持一致：vitest 5 要求 node ^22.12.0 || ^24 || >=26
+          node-version: '22.12'
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

@@ -14,7 +14,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          # vitest 5 要求 node ^22.12.0 || ^24 || >=26；锁到 22.12+ 避免 engine 漂移
+          node-version: '22.12'
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -37,5 +38,5 @@ jobs:
       - name: i18n integrity scan
         run: npm run lint:i18n
 
-      - name: Unit tests
-        run: npx vitest run
+      - name: Unit tests + offline/i18n red lines
+        run: npm test

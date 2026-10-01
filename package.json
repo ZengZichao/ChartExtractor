@@ -4,6 +4,9 @@
   "description": "离线图表数据提取工具（中英双语界面）- 纯本地运行（Tauri v2 + React + TypeScript）",
   "author": "Zichao Zeng",
   "license": "GPL-3.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "vite",
     "build:renderer": "vite build",
@@ -17,9 +20,9 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2",
+    "@tauri-apps/api": "^2.12.1",
     "jszip": "^3.10.1",
-    "lucide-react": "^1.47.0",
+    "lucide-react": "^1.49.0",
     "pdfjs-dist": "^4.7.76",
     "radix-ui": "^1.6.7",
     "react": "^18.3.1",
@@ -27,14 +30,14 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2",
-    "@types/node": "^26.6.2",
+    "@tauri-apps/cli": "^2.12.1",
+    "@types/node": "^26.6.3",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "prettier": "^3.9.8",
+    "prettier": "^3.9.9",
     "typescript": "^5.5.4",
-    "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
   }
 }

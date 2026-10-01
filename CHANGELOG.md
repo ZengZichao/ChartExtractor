@@ -5,6 +5,24 @@
 
 所有历史版本的二进制构建可在 [GitHub Releases](https://github.com/ZengZichao/ChartExtractor/releases) 获取。
 
+## [Unreleased]
+
+### 变更
+- **依赖升级**：Tauri 全家桶对齐至 2.12.x（`tauri` 2.12.1 / `tauri-build` 2.7.1 /
+  `tauri-plugin-dialog` 2.8.1 / `tauri-plugin-opener` 2.7.0），前端侧同步升级
+  `vite` 8.3.1、`vitest` 5.0.2、`lucide-react` 1.49.0、`encoding_rs` 0.8.42 等。
+  `tauri` 与 `tauri-build` 必须同版本联动，此前由 Dependabot 单独升级会导致 CI 构建失败。
+- **Node 版本要求提高至 ≥ 22.12**（vitest 5 的硬性要求），此前未声明导致
+  Node 20 环境下仅打印 `EBADENGINE` 警告。
+
+### 修复
+- `dependabot.yml` 增加 `groups`：按生态聚合为单个 PR。`Cargo.lock` 与
+  `package-lock.json` 均为单文件锁，此前会同时开出多个互相冲突的 PR。
+- `ci.yml` / `release.yml` 的 Node 版本由 `'22'` 固定为 `'22.12'`，消除 engine 漂移。
+- CI 单测步骤由 `npx vitest run` 改为 `npm test`，使离线隐私红线与 i18n
+  一致性扫描在 CI 中真正执行（此前被绕过）。
+- 文档中的 Node 版本要求与实际约束对齐。
+
 ## [0.1.0] - 2026-09-16
 
 ### 新增

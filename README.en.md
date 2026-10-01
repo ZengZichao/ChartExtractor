@@ -34,7 +34,7 @@ Grab the installer for your platform from [GitHub Releases](https://github.com/Z
 
 ### Option 2: Build from source
 
-Prerequisites: Node.js ≥ 22 (or ≥ 20.19) and a stable Rust toolchain.
+Prerequisites: Node.js ≥ 22.12 (required by vitest 5) and a stable Rust toolchain.
 
 ```bash
 npm install
