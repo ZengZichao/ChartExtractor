@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "离线图表数据提取工具（中英双语界面）- 纯本地运行"
 authors = ["Zichao Zeng"]
 edition = "2021"
-rust-version = "1.77"
+# 与 rust-toolchain.toml 的 channel 保持一致，并由 CI 实际验证。
+# 原先声明的 1.77 是错的：tauri 2.12.x / tauri-build 2.7.x 均要求 rustc >= 1.90。
+rust-version = "1.90"
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }

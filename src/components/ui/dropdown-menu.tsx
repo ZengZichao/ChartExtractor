@@ -91,19 +91,13 @@ const DropdownMenuLabel = ({
   className,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Label>) => (
-  <DropdownMenuPrimitive.Label
-    className={cn("dropdown-label", className)}
-    {...props}
-  />
+  <DropdownMenuPrimitive.Label className={cn("dropdown-label", className)} {...props} />
 );
 const DropdownMenuSeparator = ({
   className,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) => (
-  <DropdownMenuPrimitive.Separator
-    className={cn("dropdown-divider", className)}
-    {...props}
-  />
+  <DropdownMenuPrimitive.Separator className={cn("dropdown-divider", className)} {...props} />
 );
 function DropdownMenuSubTrigger({
   className,
@@ -111,10 +105,7 @@ function DropdownMenuSubTrigger({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger>) {
   return (
-    <DropdownMenuPrimitive.SubTrigger
-      className={cn("dropdown-item", className)}
-      {...props}
-    >
+    <DropdownMenuPrimitive.SubTrigger className={cn("dropdown-item", className)} {...props}>
       {children}
       <ChevronRightIcon size={14} style={{ marginLeft: "auto" }} />
     </DropdownMenuPrimitive.SubTrigger>
@@ -126,10 +117,7 @@ function DropdownMenuSubContent({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
   return (
     <DropdownMenuPrimitive.Portal>
-      <DropdownMenuPrimitive.SubContent
-        className={cn("dropdown", className)}
-        {...props}
-      />
+      <DropdownMenuPrimitive.SubContent className={cn("dropdown", className)} {...props} />
     </DropdownMenuPrimitive.Portal>
   );
 }

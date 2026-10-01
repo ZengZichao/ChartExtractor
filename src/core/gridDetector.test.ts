@@ -8,11 +8,7 @@ import { GridDetector } from "./gridDetector";
 import { CurveTracker } from "./curveTracker";
 import type { BinaryData } from "./colorFilter";
 /** 制造一个 dw×dh 的二值图，并在指定列/行填充亮像素 */
-function makeBinary(
-  dw: number,
-  dh: number,
-  fill?: (x: number, y: number) => boolean,
-): BinaryData {
+function makeBinary(dw: number, dh: number, fill?: (x: number, y: number) => boolean): BinaryData {
   const data = new Uint8Array(dw * dh);
   for (let y = 0; y < dh; y++) {
     for (let x = 0; x < dw; x++) {

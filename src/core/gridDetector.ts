@@ -145,12 +145,7 @@ export class GridDetector {
           }
         }
         if (onProgress)
-          onProgress(
-            Math.min(
-              0.5,
-              0.05 + ((colEnd - xmin) / Math.max(xmax - xmin, 1)) * 0.45,
-            ),
-          );
+          onProgress(Math.min(0.5, 0.05 + ((colEnd - xmin) / Math.max(xmax - xmin, 1)) * 0.45));
         await yieldToMain();
       }
     }
@@ -172,12 +167,7 @@ export class GridDetector {
           }
         }
         if (onProgress)
-          onProgress(
-            Math.min(
-              1,
-              0.55 + ((rowEnd - ymin) / Math.max(ymax - ymin, 1)) * 0.45,
-            ),
-          );
+          onProgress(Math.min(1, 0.55 + ((rowEnd - ymin) / Math.max(ymax - ymin, 1)) * 0.45));
         await yieldToMain();
       }
     }

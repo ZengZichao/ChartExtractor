@@ -25,9 +25,7 @@ const src = fs.readFileSync(TRANSLATIONS, "utf8");
 const zhBlock = src.slice(src.indexOf("zh: {"), src.indexOf("en: {"));
 const enBlock = src.slice(src.indexOf("en: {"));
 const keys = (block) =>
-  [...block.matchAll(/^\s*['"]([a-zA-Z0-9_.]+)['"]\s*:/gm)]
-    .map((m) => m[1])
-    .filter(Boolean);
+  [...block.matchAll(/^\s*['"]([a-zA-Z0-9_.]+)['"]\s*:/gm)].map((m) => m[1]).filter(Boolean);
 const zh = new Set(keys(zhBlock));
 const en = new Set(keys(enBlock));
 const missingEn = [...zh].filter((k) => !en.has(k));
@@ -93,17 +91,9 @@ function walk(dir) {
   const out = [];
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, ent.name);
-    if (
-      ent.isDirectory() &&
-      !ent.name.startsWith(".") &&
-      ent.name !== "node_modules"
-    )
+    if (ent.isDirectory() && !ent.name.startsWith(".") && ent.name !== "node_modules")
       out.push(...walk(p));
-    else if (
-      ent.isFile() &&
-      EXT.includes(path.extname(ent.name)) &&
-      !EXCLUDED.includes(ent.name)
-    )
+    else if (ent.isFile() && EXT.includes(path.extname(ent.name)) && !EXCLUDED.includes(ent.name))
       out.push(p);
   }
   return out;
@@ -139,16 +129,11 @@ for (const file of files) {
     if (cleaned.trim() === "中") return;
     hits++;
     const rel = path.relative(ROOT, file);
-    if (hits <= 30)
-      console.error(
-        `✗ ${rel}:${i + 1} 含中文字面量: ${cleaned.trim().slice(0, 90)}`,
-      );
+    if (hits <= 30) console.error(`✗ ${rel}:${i + 1} 含中文字面量: ${cleaned.trim().slice(0, 90)}`);
   });
 }
 if (hits > 0) {
-  fail(
-    `源码中硬编码中文 ${hits} 处（上述列出前 30 处），请改用 t('...') 并确保键已入字典`,
-  );
+  fail(`源码中硬编码中文 ${hits} 处（上述列出前 30 处），请改用 t('...') 并确保键已入字典`);
 } else {
   console.log("✓ 源码中无硬编码中文（注释除外）");
 }

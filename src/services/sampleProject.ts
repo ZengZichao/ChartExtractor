@@ -24,12 +24,7 @@
  * P4(ymax) 左上角；pixMat 仍可逆（PL≠PR、PB≠PT），残差≈0。
  * - 通过 applyLoadedProject 载入，复用现有工程加载链路，零额外状态逻辑。
  */
-import type {
-  CalibrationConfig,
-  Dataset,
-  ProjectData,
-  ProjectManifest,
-} from "../types";
+import type { CalibrationConfig, Dataset, ProjectData, ProjectManifest } from "../types";
 import { generateId } from "../core/mathUtils";
 import { APP_VERSION } from "../version";
 // ========== 图像几何与坐标轴范围（图像像素空间） ==========

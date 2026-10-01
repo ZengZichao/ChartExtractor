@@ -15,11 +15,7 @@ function Separator({
     <SeparatorPrimitive.Root
       decorative={decorative}
       orientation={orientation}
-      className={cn(
-        "separator",
-        orientation === "vertical" && "separator-vertical",
-        className,
-      )}
+      className={cn("separator", orientation === "vertical" && "separator-vertical", className)}
       {...props}
     />
   );

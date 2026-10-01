@@ -53,20 +53,13 @@ export interface RecentFile {
 }
 export interface AppApi {
   openFileDialog(filters?: DialogFilter[]): Promise<string | null>;
-  saveFileDialog(
-    defaultName: string,
-    filters?: DialogFilter[],
-  ): Promise<string | null>;
+  saveFileDialog(defaultName: string, filters?: DialogFilter[]): Promise<string | null>;
   readFile(filePath: string): Promise<FileReadResult>;
   writeFile(filePath: string, data: string): Promise<SimpleResult>;
   writeWithBackup(filePath: string, data: string): Promise<SimpleResult>;
   readTextFile(filePath: string): Promise<FileReadResult>;
   writeTextFile(filePath: string, content: string): Promise<SimpleResult>;
-  writeTextEncoded(
-    filePath: string,
-    content: string,
-    encoding: string,
-  ): Promise<SimpleResult>;
+  writeTextEncoded(filePath: string, content: string, encoding: string): Promise<SimpleResult>;
   fileStat(filePath: string): Promise<FileStatResult>;
   openPath(filePath: string): Promise<SimpleResult>;
   getUserDataPath(): Promise<string>;
@@ -87,8 +80,7 @@ export interface AppApi {
   ): Promise<Array<{ path: string; name: string }>>;
 }
 /** 是否运行在 Tauri 环境（区别于纯浏览器 dev） */
-export const isTauri =
-  typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+export const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 export const appApi: AppApi = {
   openFileDialog(filters) {
     return invoke<string | null>("open_file", { filters: filters ?? null });

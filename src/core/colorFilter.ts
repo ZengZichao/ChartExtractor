@@ -78,21 +78,9 @@ export class ColorFilter {
       bb = 255;
     }
     const threshold = this.params.colorDistance;
-    const refColor =
-      this.params.mode === "foreground"
-        ? this.params.fgColor
-        : this.params.bgColor;
-    const dist = colorDistance(
-      rr,
-      gg,
-      bb,
-      refColor[0],
-      refColor[1],
-      refColor[2],
-    );
-    return this.params.mode === "foreground"
-      ? dist <= threshold
-      : dist >= threshold;
+    const refColor = this.params.mode === "foreground" ? this.params.fgColor : this.params.bgColor;
+    const dist = colorDistance(rr, gg, bb, refColor[0], refColor[1], refColor[2]);
+    return this.params.mode === "foreground" ? dist <= threshold : dist >= threshold;
   }
   /**
    * 生成二值化数据（同步全图扫描）
@@ -167,10 +155,7 @@ export class ColorFilter {
       return binaryData;
     }
     const threshold = this.params.colorDistance;
-    const refColor =
-      this.params.mode === "foreground"
-        ? this.params.fgColor
-        : this.params.bgColor;
+    const refColor = this.params.mode === "foreground" ? this.params.fgColor : this.params.bgColor;
     const refR = refColor[0],
       refG = refColor[1],
       refB = refColor[2];
@@ -194,8 +179,7 @@ export class ColorFilter {
             dg = g - refG,
             db = b - refB;
           const dist = Math.sqrt(dr * dr + dg * dg + db * db);
-          const match =
-            mode === "foreground" ? dist <= threshold : dist >= threshold;
+          const match = mode === "foreground" ? dist <= threshold : dist >= threshold;
           if (match) binaryData[yi * width + xi] = 1;
         }
       }
@@ -208,11 +192,7 @@ export class ColorFilter {
   /**
    * 从图像中拾取颜色（用于前景色选择）
    */
-  static pickColor(
-    imageData: ImageData,
-    px: number,
-    py: number,
-  ): [number, number, number] {
+  static pickColor(imageData: ImageData, px: number, py: number): [number, number, number] {
     const w = imageData.width;
     const h = imageData.height;
     const cx = Math.max(0, Math.min(w - 1, Math.floor(px)));
@@ -231,8 +211,7 @@ export class ColorFilter {
     maxColors = 10,
   ): Array<{ color: [number, number, number]; count: number }> {
     const data = imageData.data;
-    const groups: Array<{ color: [number, number, number]; count: number }> =
-      [];
+    const groups: Array<{ color: [number, number, number]; count: number }> = [];
     const step = Math.max(1, Math.floor(Math.sqrt(data.length / 4 / 10000))); // 降采样
     for (let idx = 0; idx < data.length / 4; idx += step) {
       const i = idx * 4;
@@ -248,26 +227,13 @@ export class ColorFilter {
       // 查找是否已有相似颜色组
       let found = false;
       for (const group of groups) {
-        const dist = colorDistance(
-          r,
-          g,
-          b,
-          group.color[0],
-          group.color[1],
-          group.color[2],
-        );
+        const dist = colorDistance(r, g, b, group.color[0], group.color[1], group.color[2]);
         if (dist < tolerance) {
           // 合并到该组（更新平均颜色）
           const totalCount = group.count + 1;
-          group.color[0] = Math.round(
-            (group.color[0] * group.count + r) / totalCount,
-          );
-          group.color[1] = Math.round(
-            (group.color[1] * group.count + g) / totalCount,
-          );
-          group.color[2] = Math.round(
-            (group.color[2] * group.count + b) / totalCount,
-          );
+          group.color[0] = Math.round((group.color[0] * group.count + r) / totalCount);
+          group.color[1] = Math.round((group.color[1] * group.count + g) / totalCount);
+          group.color[2] = Math.round((group.color[2] * group.count + b) / totalCount);
           group.count = totalCount;
           found = true;
           break;
@@ -284,11 +250,7 @@ export class ColorFilter {
   /**
    * 将二值化数据可视化为 ImageData（用于掩码预览）
    */
-  static binaryToImageData(
-    binaryData: BinaryData,
-    width: number,
-    height: number,
-  ): ImageData {
+  static binaryToImageData(binaryData: BinaryData, width: number, height: number): ImageData {
     const data = new Uint8ClampedArray(width * height * 4);
     // 默认透明背景
     for (let i = 0; i < data.length; i += 4) {

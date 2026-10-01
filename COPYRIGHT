@@ -1,0 +1,24 @@
+ChartExtractor
+Copyright (C) 2026 Zichao Zeng
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+----------------------------------------------------------------------------
+
+本文件单独承载本项目的版权与免责声明声明，`LICENSE` 则只保留未经改动的
+GPL-3.0 全文。这样 GitHub 的许可证识别才能正确判定仓库为 GPL-3.0
+（此前把本段放在 `LICENSE` 正文之前，会导致 `licenseInfo.spdx_id` 退化为
+`NOASSERTION`，仓库页也不显示许可证徽章）。
+
+许可证正文见 [LICENSE](LICENSE)。

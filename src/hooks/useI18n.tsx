@@ -17,19 +17,8 @@
  * - 语言选择持久化到 localStorage
  * - 通过 t(key, params) 获取翻译文本，支持 {placeholder} 插值
  */
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  createContext,
-  useContext,
-} from "react";
-import {
-  translations,
-  type Lang,
-  type TranslationKey,
-} from "../i18n/translations";
+import { useState, useEffect, useCallback, useMemo, createContext, useContext } from "react";
+import { translations, type Lang, type TranslationKey } from "../i18n/translations";
 const STORAGE_KEY = "chart-extractor-lang";
 function getInitialLang(): Lang {
   try {
@@ -75,11 +64,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   );
   // P3-6 修复：memoize context value 避免每次渲染创建新对象
   const value = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t]);
-  return (
-    <I18nContext.Provider value={value}>
-      {children}
-    </I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 export function useI18n(): I18nContextValue {
   const ctx = useContext(I18nContext);

@@ -55,11 +55,7 @@ export class BlobDetector {
    * @param imageHeight 图像高度
    * @returns 检测到的散点列表
    */
-  detect(
-    binaryData: BinaryData,
-    imageWidth: number,
-    imageHeight: number,
-  ): BlobResult[] {
+  detect(binaryData: BinaryData, imageWidth: number, imageHeight: number): BlobResult[] {
     const dw = imageWidth;
     const dh = imageHeight;
     const visited = new Uint8Array(dw * dh);
@@ -110,10 +106,7 @@ export class BlobDetector {
       // 计算直径
       const diameter = 2.0 * Math.sqrt(count / Math.PI);
       // 按直径阈值过滤
-      if (
-        diameter <= this.params.maxDiameter &&
-        diameter >= this.params.minDiameter
-      ) {
+      if (diameter <= this.params.maxDiameter && diameter >= this.params.minDiameter) {
         blobs.push({
           centroid: { x: cx + 0.5, y: cy + 0.5 },
           area: count,
@@ -193,10 +186,7 @@ export class BlobDetector {
       // 计算直径
       const diameter = 2.0 * Math.sqrt(count / Math.PI);
       // 按直径阈值过滤
-      if (
-        diameter <= this.params.maxDiameter &&
-        diameter >= this.params.minDiameter
-      ) {
+      if (diameter <= this.params.maxDiameter && diameter >= this.params.minDiameter) {
         blobs.push({
           centroid: { x: cx + 0.5, y: cy + 0.5 },
           area: count,

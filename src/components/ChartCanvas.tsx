@@ -26,13 +26,7 @@ import React, {
 } from "react";
 import type { CalibrationPoint, DataPoint, PixelPoint } from "../types";
 import { useI18n } from "../hooks/useI18n";
-import {
-  BarChartIcon,
-  MinusIcon,
-  PlusIcon,
-  MaximizeIcon,
-  LockIcon,
-} from "./Icons";
+import { BarChartIcon, MinusIcon, PlusIcon, MaximizeIcon, LockIcon } from "./Icons";
 export interface CanvasHandle {
   getCanvas(): HTMLCanvasElement | null;
   getImageData(): ImageData | null;
@@ -52,19 +46,9 @@ interface ChartCanvasProps {
   calibratePointIndex: number; // 当前标定的点索引
   showDataPoints: boolean;
   onCanvasClick: (imgX: number, imgY: number) => void;
-  onCanvasRightClick: (
-    imgX: number,
-    imgY: number,
-    screenX: number,
-    screenY: number,
-  ) => void;
+  onCanvasRightClick: (imgX: number, imgY: number, screenX: number, screenY: number) => void;
   /** 拖拽数据点改位（dsIdx=数据集下标，ptIdx=点下标，imgX/imgY=新图像坐标） */
-  onCanvasPointMove?: (
-    dsIdx: number,
-    ptIdx: number,
-    imgX: number,
-    imgY: number,
-  ) => void;
+  onCanvasPointMove?: (dsIdx: number, ptIdx: number, imgX: number, imgY: number) => void;
   onColorPick: (imgX: number, imgY: number) => void;
   colorPickMode: boolean;
   maskImageData?: ImageData | null;
@@ -141,9 +125,7 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
     useEffect(() => {
       offsetRef.current = offset;
     }, [offset]);
-    const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(
-      null,
-    );
+    const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
     // 放大镜状态：跟随鼠标显示像素级放大图、颜色信息
     const [magnifier, setMagnifier] = useState<{
       visible: boolean;
@@ -233,9 +215,7 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
       srcCanvasRef.current = c;
       srcCtxRef.current = cx;
       try {
-        const v = getComputedStyle(document.documentElement).getPropertyValue(
-          "--canvas-bg",
-        ).trim();
+        const v = getComputedStyle(document.documentElement).getPropertyValue("--canvas-bg").trim();
         if (v) canvasBgRef.current = v;
       } catch {
         /* 忽略，回退默认 */
@@ -363,8 +343,8 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
           if (shortRole) {
             ctx.font = "10px sans-serif";
             ctx.strokeStyle = "rgba(0,0,0,0.6)";
-          ctx.lineWidth = 2.5;
-          ctx.strokeText(shortRole, sx, sy + 22);
+            ctx.lineWidth = 2.5;
+            ctx.strokeText(shortRole, sx, sy + 22);
             ctx.fillStyle = "rgba(255,255,255,0.95)";
             ctx.fillText(shortRole, sx, sy + 22);
           }
@@ -382,11 +362,7 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
           ctx.fillStyle = "#1d1d1f";
           ctx.font = "bold 13px sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText(
-            t("canvas.calibrateGuide", { n: String(nextIdx + 1), label }),
-            cssW / 2,
-            36,
-          );
+          ctx.fillText(t("canvas.calibrateGuide", { n: String(nextIdx + 1), label }), cssW / 2, 36);
           ctx.restore();
         }
       }
@@ -512,12 +488,7 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
         const t = el as HTMLElement | null;
         if (!t) return false;
         const tag = t.tagName;
-        return (
-          tag === "INPUT" ||
-          tag === "TEXTAREA" ||
-          tag === "SELECT" ||
-          t.isContentEditable
-        );
+        return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || t.isContentEditable;
       };
       const isActivatable = (el: EventTarget | null) =>
         (el as HTMLElement | null)?.closest(
@@ -563,12 +534,7 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
         for (let di = 0; di < dataPoints.length; di++) {
           const ds = dataPoints[di];
           for (let pi = 0; pi < ds.points.length; pi++) {
-            if (
-              Math.hypot(
-                ds.points[pi].x - imgPos.px,
-                ds.points[pi].y - imgPos.py,
-              ) <= hitRadius
-            ) {
+            if (Math.hypot(ds.points[pi].x - imgPos.px, ds.points[pi].y - imgPos.py) <= hitRadius) {
               setDragPoint({ dsIdx: di, ptIdx: pi });
               setDragImgPos({ x: imgPos.px, y: imgPos.py });
               return;
@@ -611,10 +577,7 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
       if (dragPoint) {
         const imgPos = screenToImage(e.clientX, e.clientY);
         if (
-          Math.hypot(
-            imgPos.px - dragStart.current.imgX,
-            imgPos.py - dragStart.current.imgY,
-          ) > 3
+          Math.hypot(imgPos.px - dragStart.current.imgX, imgPos.py - dragStart.current.imgY) > 3
         ) {
           dragStart.current.moved = true;
         }
@@ -622,11 +585,7 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
       }
     };
     /** 更新放大镜：采样鼠标周围像素并绘制到放大镜 canvas */
-    const updateMagnifier = (
-      clientX: number,
-      clientY: number,
-      canvasRect: DOMRect,
-    ) => {
+    const updateMagnifier = (clientX: number, clientY: number, canvasRect: DOMRect) => {
       if (!image || !magnifierCanvasRef.current) return;
       const imgPos = screenToImage(clientX, clientY);
       const ix = Math.round(imgPos.px);
@@ -685,12 +644,7 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
       magCtx.lineTo(centerX, centerY + 6);
       magCtx.stroke();
       magCtx.strokeStyle = "rgba(0, 122, 255, 1)";
-      magCtx.strokeRect(
-        centerX - MAG_ZOOM / 2,
-        centerY - MAG_ZOOM / 2,
-        MAG_ZOOM,
-        MAG_ZOOM,
-      );
+      magCtx.strokeRect(centerX - MAG_ZOOM / 2, centerY - MAG_ZOOM / 2, MAG_ZOOM, MAG_ZOOM);
       setMagnifier({
         visible: true,
         screenX: clientX - canvasRect.left,
@@ -762,12 +716,7 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
       // P1-7 修复：复用已缓存的离屏原图画布（srcCtxRef），避免每次全量重建
       const srcCtx = srcCtxRef.current;
       if (!srcCtx || !image) return null;
-      return srcCtx.getImageData(
-        0,
-        0,
-        image.naturalWidth,
-        image.naturalHeight,
-      );
+      return srcCtx.getImageData(0, 0, image.naturalWidth, image.naturalHeight);
     }, [image]);
     useImperativeHandle(ref, (): CanvasHandle => ({
       getCanvas: () => canvasRef.current,
@@ -849,8 +798,8 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
         />
         <div className="canvas-overlay">
           <div className="canvas-info">
-            {t("canvas.zoom")}: {(zoom * 100).toFixed(0)}% |{" "}
-            {image.naturalWidth}×{image.naturalHeight}px
+            {t("canvas.zoom")}: {(zoom * 100).toFixed(0)}% | {image.naturalWidth}×
+            {image.naturalHeight}px
           </div>
           {hoverPos && (
             <div className="canvas-info">
@@ -860,15 +809,8 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
                 const sy = hoverPos.y + (rect?.top ?? 0);
                 const img = screenToImage(sx, sy);
                 // 已标定时换算数据坐标；未标定阶段回退像素坐标
-                const data =
-                  showDataReadout && pixelToData
-                    ? pixelToData(img.px, img.py)
-                    : null;
-                if (
-                  data &&
-                  Number.isFinite(data[0]) &&
-                  Number.isFinite(data[1])
-                ) {
+                const data = showDataReadout && pixelToData ? pixelToData(img.px, img.py) : null;
+                if (data && Number.isFinite(data[0]) && Number.isFinite(data[1])) {
                   return `${t("canvas.data")}: X=${data[0].toFixed(precision)}, Y=${data[1].toFixed(precision)}（${t("canvas.coord")}: ${img.px.toFixed(0)}, ${img.py.toFixed(0)}）`;
                 }
                 return `${t("canvas.coord")}: ${img.px.toFixed(0)}, ${img.py.toFixed(0)}`;
@@ -882,26 +824,14 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
           </div>
         )}
         <div className="canvas-controls">
-          <button
-            className="canvas-ctrl-btn"
-            onClick={zoomOut}
-            title={t("canvas.ctrl.zoomOut")}
-          >
+          <button className="canvas-ctrl-btn" onClick={zoomOut} title={t("canvas.ctrl.zoomOut")}>
             <MinusIcon size={14} />
           </button>
           <span className="canvas-zoom-label">{(zoom * 100).toFixed(0)}%</span>
-          <button
-            className="canvas-ctrl-btn"
-            onClick={zoomIn}
-            title={t("canvas.ctrl.zoomIn")}
-          >
+          <button className="canvas-ctrl-btn" onClick={zoomIn} title={t("canvas.ctrl.zoomIn")}>
             <PlusIcon size={14} />
           </button>
-          <button
-            className="canvas-ctrl-btn"
-            onClick={zoomToFit}
-            title={t("canvas.ctrl.zoomFit")}
-          >
+          <button className="canvas-ctrl-btn" onClick={zoomToFit} title={t("canvas.ctrl.zoomFit")}>
             <MaximizeIcon size={14} />
           </button>
         </div>
@@ -926,14 +856,10 @@ const ChartCanvas = forwardRef<CanvasHandle, ChartCanvasProps>(
               height={160}
             />
             <div className="magnifier-info">
-              <div
-                className="magnifier-color-bar"
-                style={{ background: magnifier.hex }}
-              />
+              <div className="magnifier-color-bar" style={{ background: magnifier.hex }} />
               <div className="magnifier-text">
                 <div className="magnifier-rgb">
-                  RGB({magnifier.rgb[0]}, {magnifier.rgb[1]}, {magnifier.rgb[2]}
-                  )
+                  RGB({magnifier.rgb[0]}, {magnifier.rgb[1]}, {magnifier.rgb[2]})
                 </div>
                 <div className="magnifier-hex">{magnifier.hex}</div>
                 <div className="magnifier-pix">

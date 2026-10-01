@@ -16,12 +16,7 @@ function DialogOverlay({
   className,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
-  return (
-    <DialogPrimitive.Overlay
-      className={cn("modal-overlay", className)}
-      {...props}
-    />
-  );
+  return <DialogPrimitive.Overlay className={cn("modal-overlay", className)} {...props} />;
 }
 function DialogContent({
   className,
@@ -38,10 +33,7 @@ function DialogContent({
       <DialogPrimitive.Content className={cn("modal", className)} {...props}>
         {children}
         {showCloseButton && (
-          <DialogPrimitive.Close
-            className="modal-close-btn"
-            aria-label={t("a11y.close")}
-          >
+          <DialogPrimitive.Close className="modal-close-btn" aria-label={t("a11y.close")}>
             <XIcon size={16} />
           </DialogPrimitive.Close>
         )}
@@ -50,16 +42,8 @@ function DialogContent({
   );
 }
 // DialogHeader 直接输出 Radix DialogTitle，消除「缺标题语义」与开发期告警
-function DialogHeader({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) {
-  return (
-    <DialogPrimitive.Title
-      className={cn("modal-header", className)}
-      {...props}
-    />
-  );
+function DialogHeader({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
+  return <DialogPrimitive.Title className={cn("modal-header", className)} {...props} />;
 }
 function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
   return <div className={cn("modal-footer", className)} {...props} />;

@@ -11,10 +11,7 @@ function Progress({
   ...props
 }: React.ComponentProps<typeof ProgressPrimitive.Root>) {
   return (
-    <ProgressPrimitive.Root
-      className={cn("progress-bar", className)}
-      {...props}
-    >
+    <ProgressPrimitive.Root className={cn("progress-bar", className)} {...props}>
       <ProgressPrimitive.Indicator
         className="progress-bar-indicator"
         style={{ transform: `translateX(-${100 - (value || 0)}%)` }}

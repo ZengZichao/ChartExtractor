@@ -62,35 +62,27 @@ export const TRANSITIONS: Record<UXState, TransitionMap> = {
   EXPORTING: { closeExport: "EXTRACTING" },
 };
 /** 守卫：返回 string 表示拦截原因，返回 null 表示放行（导出供单测） */
-export function guard(
-  state: UXState,
-  event: UXEvent,
-  f: UXFacts,
-): string | null {
+export function guard(state: UXState, event: UXEvent, f: UXFacts): string | null {
   switch (state) {
     case "IMAGE_READY":
       if (event === "startCalibrate") return f.hasImage ? null : "请先导入图像";
-      if (event === "enterExtract")
-        return f.isCalibrated ? null : "请先完成标定";
+      if (event === "enterExtract") return f.isCalibrated ? null : "请先完成标定";
       return null;
     case "CALIBRATING":
       if (event === "commit") {
         if (f.positionsSet < 4) return `还需标定 ${4 - f.positionsSet} 个位置`;
-        if (f.valuesEntered < 4)
-          return `还有 ${4 - f.valuesEntered} 个数值未填写`;
+        if (f.valuesEntered < 4) return `还有 ${4 - f.valuesEntered} 个数值未填写`;
         return null;
       }
       if (event === "cancel") return null;
       return "当前不可执行";
     case "CALIBRATED":
       if (event === "enterExtract" || event === "recalibrate") return null;
-      if (event === "openExport")
-        return f.totalPoints > 0 ? null : "尚未取点，无数据可导出";
+      if (event === "openExport") return f.totalPoints > 0 ? null : "尚未取点，无数据可导出";
       return "当前不可执行";
     case "EXTRACTING":
       if (event === "backToCalib") return null;
-      if (event === "openExport")
-        return f.totalPoints > 0 ? null : "尚未取点，无数据可导出";
+      if (event === "openExport") return f.totalPoints > 0 ? null : "尚未取点，无数据可导出";
       return "当前不可执行";
     case "EXPORTING":
       if (event === "closeExport") return null;

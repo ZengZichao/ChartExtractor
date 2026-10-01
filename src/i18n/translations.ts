@@ -67,31 +67,23 @@ export const translations = {
     "wizard.export.desc": "xlsx/CSV/JSON",
     "wizard.recentFiles": "最近文件",
     // 提示条
-    "hint.empty":
-      "从空白开始：拖入图片/PDF，或点击「导入」。支持 {formats}，PDF 可导入。",
-    "hint.imageReady":
-      "图像已就绪：点击「标定」或左侧「标定」步骤，开始坐标标定。",
+    "hint.empty": "从空白开始：拖入图片/PDF，或点击「导入」。支持 {formats}，PDF 可导入。",
+    "hint.imageReady": "图像已就绪：点击「标定」或左侧「标定」步骤，开始坐标标定。",
     "hint.calibrating": "点击图上 P{n}（{label}）的实际位置",
-    "hint.calibrating.done":
-      "4 个位置已标记 ✓ 请在右侧填入真实坐标值，然后点击「完成标定」。",
-    "hint.calibrated":
-      "标定完成（残差 {residual}px）✓ 点击「取点」开始手动或自动取点。",
+    "hint.calibrating.done": "4 个位置已标记 ✓ 请在右侧填入真实坐标值，然后点击「完成标定」。",
+    "hint.calibrated": "标定完成（残差 {residual}px）✓ 点击「取点」开始手动或自动取点。",
     "hint.extracting":
       "取点中：左键加点 / 右键删点或编辑 / 表格可直接改值；右侧可自动追踪曲线与散点。",
-    "hint.exporting":
-      "导出预览：确认数据无误后，选择数据集与格式，点击「导出」。",
+    "hint.exporting": "导出预览：确认数据无误后，选择数据集与格式，点击「导出」。",
     // 大字号操作引导
     "guide.calibrate.title": "请在图表中点击 P{n} 的位置（{label}）",
-    "guide.calibrate.done":
-      "所有标定点已放置，请在下方填写真实坐标值后点击「完成标定」",
+    "guide.calibrate.done": "所有标定点已放置，请在下方填写真实坐标值后点击「完成标定」",
     "guide.calibrate.sub": "已放置 {placed}/4 · 已填值 {values}/4",
     "guide.extract.title": "左键点击图表添加数据点",
-    "guide.extract.sub":
-      "右键命中点可删除/编辑 · 拖拽已有点可改位 · Delete 删除末点",
+    "guide.extract.sub": "右键命中点可删除/编辑 · 拖拽已有点可改位 · Delete 删除末点",
     // 导入面板
     "panel.import.title": "导入图表",
-    "panel.import.help.withImage":
-      "图像已导入，点击下方按钮开始标定，或从顶部「导入」更换图像。",
+    "panel.import.help.withImage": "图像已导入，点击下方按钮开始标定，或从顶部「导入」更换图像。",
     "panel.import.help.noImage": "支持以下导入方式：",
     "panel.import.openFile": "打开文件",
     "panel.import.changeImage": "更换图像",
@@ -120,8 +112,7 @@ export const translations = {
     "panel.calibrate.xUnit": "X 单位",
     "panel.calibrate.yLabel": "Y 名称",
     "panel.calibrate.yUnit": "Y 单位",
-    "panel.calibrate.axisHelp":
-      "导出时作为表头/列名，如「时间(s)」；留空则使用 X / Y。",
+    "panel.calibrate.axisHelp": "导出时作为表头/列名，如「时间(s)」；留空则使用 X / Y。",
     "panel.calibrate.commit": "完成标定",
     "panel.calibrate.calibrating": "标定位置 {n}/4",
     "panel.calibrate.cancel": "取消标定",
@@ -158,8 +149,7 @@ export const translations = {
     "detect.fgColor": "前景色",
     "detect.pick": "拾取",
     "detect.cancelPick": "取消拾取",
-    "detect.pickTip":
-      "点「拾取」后，在画布上点一下即可吸管取色（建议点在目标线 / 点上）。",
+    "detect.pickTip": "点「拾取」后，在画布上点一下即可吸管取色（建议点在目标线 / 点上）。",
     "detect.mode": "模式",
     "detect.mode.fg": "前景匹配",
     "detect.mode.bg": "背景排除",
@@ -171,8 +161,7 @@ export const translations = {
     "detect.tolerance.tip":
       "0–255。越大允许的颜色偏差越大、抓得越宽（但易带入噪点 / 网格线）；越小越严格（可能漏掉浅色区域）。先用 100–150 试，再微调。",
     "detect.livePreview": "实时预览掩码（调参即见）",
-    "detect.livePreview.tip":
-      "勾选后，调颜色 / 容差时画布立即显示掩码，方便边调边看。建议常开。",
+    "detect.livePreview.tip": "勾选后，调颜色 / 容差时画布立即显示掩码，方便边调边看。建议常开。",
     "detect.curveTrack": "曲线自动追踪",
     "detect.curveTrack.sub": "· 适合折线图 / 平滑曲线",
     "detect.curveTrack.tip":
@@ -184,16 +173,14 @@ export const translations = {
     "detect.yStep.tip":
       "每列内纵向搜索的精细度。一般与 X 步长一致即可；曲线很陡时可适当减小以提高精度。",
     "detect.smoothing": "三次样条平滑",
-    "detect.smoothing.tip":
-      "勾选后对追踪点做平滑插值，曲线更顺滑自然；取消则保留原始采样点。",
+    "detect.smoothing.tip": "勾选后对追踪点做平滑插值，曲线更顺滑自然；取消则保留原始采样点。",
     "detect.trackCurve": "追踪曲线",
     "detect.blobDetect": "散点自动检测",
     "detect.blobDetect.sub": "· 适合散点图",
     "detect.blobDetect.tip":
       "在掩码里寻找一个个彼此独立的小色块（连通域），取其中心作为数据点。因此适合一个个分离的圆点，不适合连成线的折线。",
     "detect.minDiameter": "最小直径",
-    "detect.minDiameter.tip":
-      "只保留直径不小于此值的色块，用来过滤掉细网格线、文字笔画等噪点。",
+    "detect.minDiameter.tip": "只保留直径不小于此值的色块，用来过滤掉细网格线、文字笔画等噪点。",
     "detect.maxDiameter": "最大直径",
     "detect.maxDiameter.tip":
       "只保留直径不大于此值的色块，用来排除大面积色块（如图例底色）。典型散点设 2–20。",
@@ -249,8 +236,7 @@ export const translations = {
     // 画布
     "canvas.empty.icon": "📊",
     "canvas.empty.title": "尚未导入图表",
-    "canvas.empty.hint":
-      "拖拽图片或 PDF 到此窗口，或点击顶部「导入」按钮选择文件。",
+    "canvas.empty.hint": "拖拽图片或 PDF 到此窗口，或点击顶部「导入」按钮选择文件。",
     "canvas.empty.steps": "四步提取数据",
     "canvas.empty.step1": "导入：拖入 / 打开 / Ctrl+V 粘贴图表图片或 PDF",
     "canvas.empty.step2": "标定：在图上点 4 个位置并填写其真实坐标值",
@@ -272,8 +258,7 @@ export const translations = {
     "toast.confirmClearShort": "导入新图表将清空当前数据，确定继续？",
     "toast.calibStart": "请在图上依次点击 4 个标定点的位置",
     "toast.calibPointSet": "已标记 P{n}，请点击 P{next}（{label}）的位置",
-    "toast.calibAllPlaced":
-      "4 个位置已标记 ✓ 请在右侧填写真实坐标值，然后点击「完成标定」",
+    "toast.calibAllPlaced": "4 个位置已标记 ✓ 请在右侧填写真实坐标值，然后点击「完成标定」",
     "toast.calibRelocated": "已重新定位 P{n}（{label}），可继续点击微调",
     "toast.calibDone": "标定完成（残差 {residual}px{warn}）",
     "toast.calibResidualWarn": "，偏大建议复核",
@@ -299,8 +284,7 @@ export const translations = {
     "toast.blobFound": "检测到 {n} 个散点，请在预览中确认应用方式",
     "toast.blobFail": "散点检测失败",
     "toast.gridCancelled": "已取消网格识别",
-    "toast.gridDone":
-      "网格识别完成：垂直 {v} 条，水平 {h} 条（仅预览，不产生数据）",
+    "toast.gridDone": "网格识别完成：垂直 {v} 条，水平 {h} 条（仅预览，不产生数据）",
     "toast.gridFail": "网格识别失败",
     "toast.detectDiscard": "已丢弃检测结果",
     "toast.detectAppend": "已追加 {n} 个点",
@@ -325,8 +309,7 @@ export const translations = {
     "toast.noSaveData": "没有可保存的工程",
     "toast.pdfPages": "PDF 共 {n} 页，可在导入面板切换页面",
     "toast.pdfParseFail": "PDF 解析失败",
-    "toast.pdfPageImported":
-      "已导入第 {n} 页（标定已保留），请在新增数据集中取点",
+    "toast.pdfPageImported": "已导入第 {n} 页（标定已保留），请在新增数据集中取点",
     "toast.pdfPageFail": "PDF 第 {n} 页解析失败",
     "toast.pdfPageImgFail": "页面图像加载失败",
     "pdf.pageSuffix": "（第{n}页）",
@@ -347,14 +330,12 @@ export const translations = {
     "toast.confirmCloseTab": "该标签页有未保存的修改，关闭后将丢失，确定关闭？",
     "toast.confirmSwitchPage.keep":
       "切换页面：将保留当前标定与已有数据点，并把该页作为新数据集导入。确定继续？",
-    "toast.confirmSwitchPage.reset":
-      "切换页面将重置当前标定与已取数据点，是否继续？",
+    "toast.confirmSwitchPage.reset": "切换页面将重置当前标定与已取数据点，是否继续？",
     "toast.invalidValue": "请输入有效数值",
     "toast.shortcuts":
       "快捷键: ⌘O 导入 | ⌘S 保存 | ⌘Z 撤销 | ⇧⌘Z 重做 | Del 删除末点 | 空格、拖拽平移 | 滚轮缩放 | F1 帮助",
     "toast.removeIssues": "移除 {n} 个可疑点",
-    "toast.confirmSampleReplace":
-      "打开示例工程将替换当前已标定的坐标和已提取的数据，确定继续？",
+    "toast.confirmSampleReplace": "打开示例工程将替换当前已标定的坐标和已提取的数据，确定继续？",
     "toast.tab.new": "新标签页",
     "toast.tab.close": "关闭标签页",
     // 上下文菜单
@@ -371,8 +352,7 @@ export const translations = {
     "ctx.pickColor": "拾取此处颜色",
     // 检测确认弹窗
     "detect.confirm.title": "检测结果确认",
-    "detect.confirm.body":
-      "共检测到 {n} 个候选点（画布上以彩色半透明点预览，掩码可同时显示）。",
+    "detect.confirm.body": "共检测到 {n} 个候选点（画布上以彩色半透明点预览，掩码可同时显示）。",
     "detect.confirm.help":
       "「追加到现有点」保留当前数据点并把结果追加到当前数据集（推荐）；「替换数据集」用结果覆盖当前数据集；操作均可撤销。",
     "detect.confirm.discard": "丢弃",
@@ -380,8 +360,7 @@ export const translations = {
     "detect.confirm.replace": "替换数据集",
     // 校验弹窗
     "validate.title": "导出前数据校验",
-    "validate.body":
-      "检测到 {n} 个可疑数据点（数据表中已标黄），可能为误点或重复：",
+    "validate.body": "检测到 {n} 个可疑数据点（数据表中已标黄），可能为误点或重复：",
     "validate.nan": "{n} 个非数值",
     "validate.out": "{n} 个超出标定范围",
     "validate.dup": "{n} 个重复坐标",
@@ -437,8 +416,7 @@ export const translations = {
     "detect.clusterFail": "无法分拣散点",
     "detect.cancel": "取消检测",
     "detect.progressLabel": "自动检测进度",
-    "detect.removeGridNoise.tip":
-      "从当前检测结果中删除落在网格线上的伪数据点（需先识别网格）",
+    "detect.removeGridNoise.tip": "从当前检测结果中删除落在网格线上的伪数据点（需先识别网格）",
     "detect.gridNoiseRemoved": "已移除 {n} 个网格伪点",
     "detect.gridNoiseNone": "未检测到网格线，请先识别网格",
     // -多曲线分离
@@ -449,8 +427,7 @@ export const translations = {
     "detect.multiCurve.added": "已提取 {n} 个点到新数据集「{name}」",
     // -散点按颜色分拣
     "detect.blobColorCluster": "按颜色分拣散点",
-    "detect.blobColorCluster.tip":
-      "将检测到的散点按颜色自动聚类，每组分到独立数据集",
+    "detect.blobColorCluster.tip": "将检测到的散点按颜色自动聚类，每组分到独立数据集",
     "detect.clusterCount": "识别到 {n} 个颜色组",
     "detect.clusterToDatasets": "分拣到数据集",
     // -批量处理
@@ -472,8 +449,7 @@ export const translations = {
     "batch.needCalib": "请先完成标定再使用批量提取",
     // -新手引导
     "guide.welcome.title": "欢迎使用 ChartExtractor",
-    "guide.welcome.desc":
-      "纯本地离线的图表数据提取工具。数据不出本机，隐私安全有保障。",
+    "guide.welcome.desc": "纯本地离线的图表数据提取工具。数据不出本机，隐私安全有保障。",
     "guide.quickstart": "快速入门",
     "guide.step1": "① 导入图片 — 拖拽或点击「导入」",
     "guide.step2": "② 标定坐标 — 在图上点4个已知坐标的位置",
@@ -481,8 +457,7 @@ export const translations = {
     "guide.step4": "④ 导出结果 — 一键导出 xlsx/CSV/JSON",
     // -精度反馈
     "detect.overlayVerify": "叠加校验",
-    "detect.overlayVerify.tip":
-      "将提取的数据点以半透明叠加在原图上，直观判断精度",
+    "detect.overlayVerify.tip": "将提取的数据点以半透明叠加在原图上，直观判断精度",
     "detect.overlayOn": "叠加: 开",
     "detect.overlayOff": "叠加: 关",
     // -隐私强化
@@ -580,8 +555,7 @@ export const translations = {
     "panel.import.help.paste": "• Ctrl+V paste screenshot",
     "panel.import.help.formats": "• Supports {formats}; PDF supported",
     "panel.import.help.pdfPages": "• Multi-page PDF: switch pages after import",
-    "panel.import.help.sample":
-      '• No chart? Try "Open Sample Project" for a full walkthrough',
+    "panel.import.help.sample": '• No chart? Try "Open Sample Project" for a full walkthrough',
     "panel.import.pdfPages": "Multi-page PDF: select page",
     "panel.import.pdfPage": "Page {n}",
     // Calibrate panel
@@ -706,12 +680,9 @@ export const translations = {
     "export.encoding.gbk": "GBK (legacy WPS)",
     "export.precision": "Decimal Precision",
     "export.includeHeader": "Include header row",
-    "export.includeMetadata":
-      "Write metadata comment lines (pandas needs comment='#')",
-    "export.includeMetadata.tip":
-      "Default off: keeps pandas.read_csv directly parseable",
-    "export.jsonNote":
-      'JSON always includes dataset metadata; "header" does not apply.',
+    "export.includeMetadata": "Write metadata comment lines (pandas needs comment='#')",
+    "export.includeMetadata.tip": "Default off: keeps pandas.read_csv directly parseable",
+    "export.jsonNote": 'JSON always includes dataset metadata; "header" does not apply.',
     "export.previewTitle": "Full Preview (first 5 rows per dataset)",
     "export.noDataSelected": "No datasets with data selected",
     "export.cancel": "Cancel",
@@ -735,8 +706,7 @@ export const translations = {
     "canvas.empty.hint":
       'Drag an image or PDF into this window, or click the "Import" button at the top.',
     "canvas.empty.steps": "Extract Data in 4 Steps",
-    "canvas.empty.step1":
-      "Import: drag / open / Ctrl+V paste chart image or PDF",
+    "canvas.empty.step1": "Import: drag / open / Ctrl+V paste chart image or PDF",
     "canvas.empty.step2":
       "Calibrate: click 4 positions on the chart and enter their real coordinate values",
     "canvas.empty.step3":
@@ -755,8 +725,7 @@ export const translations = {
     "toast.imageLoadFail": "Image load failed—unsupported format?",
     "toast.confirmClear":
       "Importing a new chart will clear all current calibration and extracted data (use Ctrl+Z to undo). Continue?",
-    "toast.confirmClearShort":
-      "Importing a new chart will clear current data. Continue?",
+    "toast.confirmClearShort": "Importing a new chart will clear current data. Continue?",
     "toast.calibStart": "Click 4 calibration point positions on the chart",
     "toast.calibPointSet": "Marked P{n}. Click P{next} ({label})",
     "toast.calibAllPlaced":
@@ -784,13 +753,11 @@ export const translations = {
     "toast.curveFound": "Found {n} candidate points—confirm in preview",
     "toast.curveFail": "Curve tracking failed",
     "toast.blobCancelled": "Blob detection cancelled",
-    "toast.blobEmpty":
-      "No blobs found—adjust color threshold or diameter range",
+    "toast.blobEmpty": "No blobs found—adjust color threshold or diameter range",
     "toast.blobFound": "Found {n} blobs—confirm in preview",
     "toast.blobFail": "Blob detection failed",
     "toast.gridCancelled": "Grid detection cancelled",
-    "toast.gridDone":
-      "Grid detection done: {v} vertical, {h} horizontal lines (preview only)",
+    "toast.gridDone": "Grid detection done: {v} vertical, {h} horizontal lines (preview only)",
     "toast.gridFail": "Grid detection failed",
     "toast.detectDiscard": "Detection result discarded",
     "toast.detectAppend": "Appended {n} points",
@@ -822,8 +789,7 @@ export const translations = {
     "pdf.pageSuffix": " (page {n})",
     "toast.unsupportedFormat":
       'Unsupported format ".{ext}". Please use {formats}, or convert the chart.',
-    "toast.noExtension":
-      "File has no extension. Please use {formats}, or convert the chart.",
+    "toast.noExtension": "File has no extension. Please use {formats}, or convert the chart.",
     "toast.fileReadFail": "File read failed",
     "toast.importFail": "Import failed",
     "toast.confirmDeleteDataset": 'Delete dataset "{name}" ({n} points)?',
@@ -835,8 +801,7 @@ export const translations = {
     "toast.confirmCancel": "Cancel",
     "toast.autosaveCorrupt":
       "The last session file is corrupted. It was kept in the app data directory (not cleared).",
-    "toast.confirmCloseTab":
-      "This tab has unsaved changes. Closing will lose them. Close anyway?",
+    "toast.confirmCloseTab": "This tab has unsaved changes. Closing will lose them. Close anyway?",
     "toast.confirmSwitchPage.keep":
       "Switching pages: current calibration and data will be preserved; the page will be imported as a new dataset. Continue?",
     "toast.confirmSwitchPage.reset":
@@ -932,8 +897,7 @@ export const translations = {
     "detect.removeGridNoise.tip":
       "Remove false data points lying on detected grid lines (run grid detection first)",
     "detect.gridNoiseRemoved": "Removed {n} grid noise points",
-    "detect.gridNoiseNone":
-      "No grid lines detected, please run grid detection first",
+    "detect.gridNoiseNone": "No grid lines detected, please run grid detection first",
     // Theme B - Multi-curve separation
     "detect.multiCurve": "Multi-Curve Separation",
     "detect.multiCurve.tip":
@@ -984,8 +948,7 @@ export const translations = {
     "about.privacy": "Privacy Statement",
     "about.privacy.body":
       "ChartExtractor is a fully offline desktop application. All image processing and data extraction happen on your device. No data is ever uploaded, transmitted, or stored on any server.",
-    "about.offline":
-      "100% Offline · 0 Network Requests · Data Never Leaves Your Device",
+    "about.offline": "100% Offline · 0 Network Requests · Data Never Leaves Your Device",
     "about.close": "Close",
     "menu.help.about": "About…",
     "status.offline": "🔒 Fully Offline",

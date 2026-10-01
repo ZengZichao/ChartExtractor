@@ -148,20 +148,11 @@ function userError(e: unknown, fallback: string): string {
   if (/invalidpdf|password|worker|pdf/i.test(cleaned)) {
     return `${fallback}：PDF 解析失败，建议将 PDF 另存为 PNG 图片后再导入`;
   }
-  if (cleaned && cleaned !== "[object Object]")
-    return `${fallback}：${cleaned.slice(0, 120)}`;
+  if (cleaned && cleaned !== "[object Object]") return `${fallback}：${cleaned.slice(0, 120)}`;
   return fallback;
 }
 /** 以浏览器可解码白名单为唯一真相生成引导文案 */
-const SUPPORTED_FORMATS = [
-  "png",
-  "jpg",
-  "jpeg",
-  "bmp",
-  "webp",
-  "gif",
-  "svg",
-] as const;
+const SUPPORTED_FORMATS = ["png", "jpg", "jpeg", "bmp", "webp", "gif", "svg"] as const;
 const DECODABLE = new Set<string>(SUPPORTED_FORMATS);
 const FORMAT_HINT = SUPPORTED_FORMATS.filter((f) => f !== "jpeg")
   .map((f) => f.toUpperCase())
@@ -197,11 +188,7 @@ function Section({
         <span className="panel-title">{title}</span>
         {badge && <span className="panel-section-badge">{badge}</span>}
         <span className="panel-section-arrow">
-          {open ? (
-            <ChevronDownIcon size={10} />
-          ) : (
-            <ChevronRightIcon size={10} />
-          )}
+          {open ? <ChevronDownIcon size={10} /> : <ChevronRightIcon size={10} />}
         </span>
       </div>
       {open && <div className="panel-section-body">{children}</div>}
@@ -280,19 +267,18 @@ function App() {
     }
   };
   // ========== 窗口拖动（macOS Overlay 标题栏：CSS app-region 不可靠时用 JS 兜底） ==========
-  const handleWindowDrag = useCallback(
-    (e: ReactMouseEvent) => {
-      // 只响应左键、且不在 no-drag 元素上
-      if (e.button !== 0) return;
-      const target = e.target as HTMLElement;
-      if (target.closest('[data-no-drag="true"]')) return;
-      if (isTauri) {
-        e.preventDefault();
-        getCurrentWindow().startDragging().catch(() => {});
-      }
-    },
-    [],
-  );
+  const handleWindowDrag = useCallback((e: ReactMouseEvent) => {
+    // 只响应左键、且不在 no-drag 元素上
+    if (e.button !== 0) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-no-drag="true"]')) return;
+    if (isTauri) {
+      e.preventDefault();
+      getCurrentWindow()
+        .startDragging()
+        .catch(() => {});
+    }
+  }, []);
   // ========== 多标签页状态 ==========
   const [tabs, setTabs] = useState<TabState[]>([
     { id: "tab-0", name: t("tab.untitled"), snapshot: null },
@@ -344,9 +330,7 @@ function App() {
   const [gridParams, setGridParams] = useState({ xFrac: 0.1, yFrac: 0.1 });
   // 导出
   const [exportFormat, setExportFormat] = useState<ExportFormat>("xlsx");
-  const [exportEncoding, setExportEncoding] = useState<"utf-8" | "gbk">(
-    "utf-8",
-  );
+  const [exportEncoding, setExportEncoding] = useState<"utf-8" | "gbk">("utf-8");
   const [precision, setPrecision] = useState(3);
   const [includeHeader, setIncludeHeader] = useState(true);
   // CSV 是否写入 # 元信息注释行（默认关，pandas read_csv 默认可直读）
@@ -389,8 +373,7 @@ function App() {
   const cancelDetectionRef = useRef(false);
   // 前端审查 P0-5：5 个自动检测入口的在途保护（防连点并发、取消语义被破坏）
   const detectionRunningRef = useRef(false);
-  const [detectionPreview, setDetectionPreview] =
-    useState<DetectionPreview | null>(null);
+  const [detectionPreview, setDetectionPreview] = useState<DetectionPreview | null>(null);
   // 网格线检测结果（用于伪点清理）
   const [lastGridResult, setLastGridResult] = useState<{
     verticalLines: number[];
@@ -429,12 +412,8 @@ function App() {
     }
     return fallback;
   };
-  const [leftWidth, setLeftWidth] = useState(() =>
-    loadWidth("cde.leftWidth", 180),
-  );
-  const [rightWidth, setRightWidth] = useState(() =>
-    loadWidth("cde.rightWidth", 300),
-  );
+  const [leftWidth, setLeftWidth] = useState(() => loadWidth("cde.leftWidth", 180));
+  const [rightWidth, setRightWidth] = useState(() => loadWidth("cde.rightWidth", 300));
   const [leftDragging, setLeftDragging] = useState(false);
   const [rightDragging, setRightDragging] = useState(false);
   const resizingRef = useRef<null | "left" | "right">(null);
@@ -462,9 +441,7 @@ function App() {
         window.innerWidth - leftWidthRef.current - CANVAS_MIN - RESIZER_TOTAL,
       );
       const upper = Math.min(RIGHT_MAX, maxByCanvas);
-      setRightWidth(
-        Math.min(Math.max(window.innerWidth - e.clientX, RIGHT_MIN), upper),
-      );
+      setRightWidth(Math.min(Math.max(window.innerWidth - e.clientX, RIGHT_MIN), upper));
     }
   }, []);
   // 窗口缩放时按比例收敛两侧宽度，避免恢复出越界宽度
@@ -473,10 +450,7 @@ function App() {
       const avail = window.innerWidth - CANVAS_MIN - RESIZER_TOTAL;
       if (leftWidthRef.current + rightWidthRef.current > avail) {
         const ratio = avail / (leftWidthRef.current + rightWidthRef.current);
-        const nl = Math.min(
-          LEFT_MAX,
-          Math.max(LEFT_MIN, Math.round(leftWidthRef.current * ratio)),
-        );
+        const nl = Math.min(LEFT_MAX, Math.max(LEFT_MIN, Math.round(leftWidthRef.current * ratio)));
         const nr = Math.min(RIGHT_MAX, Math.max(RIGHT_MIN, avail - nl));
         setLeftWidth(nl);
         setRightWidth(nr);
@@ -497,10 +471,8 @@ function App() {
     window.removeEventListener("mouseup", stopResize);
     // 落盘持久化（读取 ref 中的最新宽度）
     try {
-      if (side === "left")
-        localStorage.setItem("cde.leftWidth", String(leftWidthRef.current));
-      else
-        localStorage.setItem("cde.rightWidth", String(rightWidthRef.current));
+      if (side === "left") localStorage.setItem("cde.leftWidth", String(leftWidthRef.current));
+      else localStorage.setItem("cde.rightWidth", String(rightWidthRef.current));
     } catch {
       /* ignore */
     }
@@ -578,9 +550,7 @@ function App() {
   }).length;
   // ========== 初始化 ==========
   useEffect(() => {
-    undoRedoRef.current.setOnStateChange(() =>
-      setUndoRedoVersion((v) => v + 1),
-    );
+    undoRedoRef.current.setOnStateChange(() => setUndoRedoVersion((v) => v + 1));
     loadRecentFiles();
     // 同步初始事实
     ux.setFacts({
@@ -595,15 +565,11 @@ function App() {
       try {
         const r = await appApi.loadAutosave();
         if (r.success && r.data) {
-    const ok = await confirmDialog(t("toast.confirmRecoverSession"));
-    if (ok) {
+          const ok = await confirmDialog(t("toast.confirmRecoverSession"));
+          if (ok) {
             const parsed = await ProjectService.parseProjectZip(r.data);
-            if (parsed && 'data' in parsed) {
-              applyLoadedProject(
-                parsed.data,
-                parsed.imageBlob,
-                parsed.manifest,
-              );
+            if (parsed && "data" in parsed) {
+              applyLoadedProject(parsed.data, parsed.imageBlob, parsed.manifest);
               await appApi.clearAutosave().catch(() => {});
             } else {
               showToast(t("toast.autosaveCorrupt"), "warning");
@@ -617,7 +583,7 @@ function App() {
         /* 自动保存恢复失败静默 */
       }
     })();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // 实时同步状态机事实（驱动 can/go 派生）
   useEffect(() => {
@@ -717,15 +683,9 @@ function App() {
       if (!imgData || cancelled) return;
       try {
         const filter = new ColorFilter(colorParams);
-        const binary = await filter.generateBinaryDataAsync(
-          imgData,
-          undefined,
-          256,
-        );
+        const binary = await filter.generateBinaryDataAsync(imgData, undefined, 256);
         if (cancelled) return;
-        setMaskImageData(
-          ColorFilter.binaryToImageData(binary, imgData.width, imgData.height),
-        );
+        setMaskImageData(ColorFilter.binaryToImageData(binary, imgData.width, imgData.height));
         setShowMask(true);
       } catch {
         /* 预览失败静默 */
@@ -740,9 +700,7 @@ function App() {
   const validationIssues = useMemo<PointIssue[]>(() => {
     if (datasets.length === 0) return [];
     const issues: PointIssue[] = [];
-    const calPts = calibConfig.points.filter(
-      (p) => p.placed && p.px != null && p.py != null,
-    );
+    const calPts = calibConfig.points.filter((p) => p.placed && p.px != null && p.py != null);
     const pixBounds =
       calPts.length === 4
         ? {
@@ -807,8 +765,7 @@ function App() {
     prevMetadata: { area: number | null; moment: number | null },
     nextMetadata: { area: number | null; moment: number | null },
   ): UndoableCommand => {
-    const clone = (pts: { x: number; y: number }[]) =>
-      pts.map((p) => ({ x: p.x, y: p.y }));
+    const clone = (pts: { x: number; y: number }[]) => pts.map((p) => ({ x: p.x, y: p.y }));
     return {
       execute: () =>
         updateDataset(dsId, (d) => ({
@@ -902,9 +859,7 @@ function App() {
     // 保存当前标签页快照
     const snap = hasWork() ? captureSnapshot() : null;
     setTabs((prev) =>
-      prev.map((tab) =>
-        tab.id === activeTabId ? { ...tab, snapshot: snap } : tab,
-      ),
+      prev.map((tab) => (tab.id === activeTabId ? { ...tab, snapshot: snap } : tab)),
     );
     // 创建新标签页
     tabCounterRef.current += 1;
@@ -955,9 +910,7 @@ function App() {
     const snap = hasWork() ? captureSnapshot() : null;
     const undoStacks = undoRedoRef.current.getStacks();
     setTabs((prev) =>
-      prev.map((tab) =>
-        tab.id === activeTabId ? { ...tab, snapshot: snap, undoStacks } : tab,
-      ),
+      prev.map((tab) => (tab.id === activeTabId ? { ...tab, snapshot: snap, undoStacks } : tab)),
     );
     // 加载目标标签页快照
     const targetTab = tabs.find((tab) => tab.id === tabId);
@@ -1007,8 +960,7 @@ function App() {
     e.stopPropagation();
     if (tabs.length <= 1) return; // 至少保留一个标签页
     const target = tabs.find((tab) => tab.id === tabId);
-    const targetDirty =
-      (tabId === activeTabId && isDirty) || target?.snapshot?.dirty === true;
+    const targetDirty = (tabId === activeTabId && isDirty) || target?.snapshot?.dirty === true;
     if (targetDirty && !(await confirmDialog(t("toast.confirmCloseTab")))) return;
     const idx = tabs.findIndex((tab) => tab.id === tabId);
     if (idx < 0) return;
@@ -1207,19 +1159,14 @@ function App() {
         uxState: "IMAGE_READY",
         dirty: false,
       };
-      undoRedoRef.current.pushToUndo(
-        makeProjectCommand(prev, next, `导入 ${fileName}`),
-      );
+      undoRedoRef.current.pushToUndo(makeProjectCommand(prev, next, `导入 ${fileName}`));
     });
   };
   /** 多页 PDF 切页——已标定时保留标定并作为新数据集追加；未标定走安全重置 */
   const importPdfPage = async (page: number) => {
     if (!pdfState) return;
     const keepCalib = calibrationRef.current.isCalibrated();
-    const hasWork =
-      datasets.length > 0 ||
-      calibrationRef.current.isCalibrated() ||
-      image != null;
+    const hasWork = datasets.length > 0 || calibrationRef.current.isCalibrated() || image != null;
     if (hasWork) {
       const msg = keepCalib
         ? t("toast.confirmSwitchPage.keep")
@@ -1229,14 +1176,7 @@ function App() {
     try {
       const pdfResult = await importPdf(pdfState.bytes, page);
       if (keepCalib) {
-        const colors = [
-          "#007aff",
-          "#ff3b30",
-          "#34c759",
-          "#5856d6",
-          "#ff9500",
-          "#af52de",
-        ];
+        const colors = ["#007aff", "#ff3b30", "#34c759", "#5856d6", "#ff9500", "#af52de"];
         const ds: Dataset = {
           id: generateId(),
           name: nextDatasetName(datasets),
@@ -1250,9 +1190,7 @@ function App() {
           URL.revokeObjectURL(url);
           setImage(img);
           setImageBlob(pdfResult.blob);
-          setOriginalFileName(
-            `${originalFileName}${t("pdf.pageSuffix", { n: page })}`,
-          );
+          setOriginalFileName(`${originalFileName}${t("pdf.pageSuffix", { n: page })}`);
           setDatasets((cur) => [...cur, ds]);
           setActiveDatasetId(ds.id);
           setPdfState({ bytes: pdfState.bytes, numPages: pdfState.numPages });
@@ -1292,16 +1230,7 @@ function App() {
         filePath = await appApi.openFileDialog([
           {
             name: "图片和PDF",
-            extensions: [
-              "png",
-              "jpg",
-              "jpeg",
-              "bmp",
-              "webp",
-              "gif",
-              "svg",
-              "pdf",
-            ],
+            extensions: ["png", "jpg", "jpeg", "bmp", "webp", "gif", "svg", "pdf"],
           },
           { name: "工程文件", extensions: ["prj"] },
           { name: "所有文件", extensions: ["*"] },
@@ -1314,8 +1243,7 @@ function App() {
         return;
       }
       const ext = filePath.split(".").pop()?.toLowerCase();
-      const fileName =
-        filePath.split("/").pop() || filePath.split("\\").pop() || "未命名";
+      const fileName = filePath.split("/").pop() || filePath.split("\\").pop() || "未命名";
       // 浏览器 Image 可解码的图片格式白名单；TIFF 等无法解码，提前给出明确提示避免静默失败。
       // 注意：PDF 由 pdfjs 解码（非浏览器 Image），必须放行；否则下方 PDF 分支不可达。
       // 无扩展名（ext 为 undefined）或白名单外格式给出明确提示，避免静默生成 image/undefined 导致加载失败（建议3）。
@@ -1399,10 +1327,7 @@ function App() {
     if (!currentNotPlaced) {
       const hitIdx = calibConfig.points.findIndex(
         (p) =>
-          p.placed &&
-          p.px != null &&
-          p.py != null &&
-          Math.hypot(p.px - imgX, p.py - imgY) <= 12,
+          p.placed && p.px != null && p.py != null && Math.hypot(p.px - imgX, p.py - imgY) <= 12,
       );
       if (hitIdx >= 0) {
         setCalibratePointIndex(hitIdx);
@@ -1457,8 +1382,7 @@ function App() {
     const v = raw === "" ? null : parseFloat(raw);
     setCalibConfig((prev) => {
       const newPoints = [...prev.points];
-      newPoints[i] =
-        axis === "x" ? { ...newPoints[i], dx: v } : { ...newPoints[i], dy: v };
+      newPoints[i] = axis === "x" ? { ...newPoints[i], dx: v } : { ...newPoints[i], dy: v };
       return { ...prev, points: newPoints };
     });
     setDirty(true);
@@ -1513,9 +1437,7 @@ function App() {
         setCalibResidual(calibrationRef.current.getResidual());
         if (createdDs) {
           setDatasets((prev) =>
-            prev.some((d) => d.id === createdDs!.id)
-              ? prev
-              : [...prev, createdDs!],
+            prev.some((d) => d.id === createdDs!.id) ? prev : [...prev, createdDs!],
           );
           setActiveDatasetId(createdDs.id);
         }
@@ -1535,9 +1457,7 @@ function App() {
         setCalibResidual(calibrationRef.current.getResidual());
         if (createdDs) {
           setDatasets((prev) =>
-            prev.some((d) => d.id === createdDs!.id)
-              ? prev
-              : [...prev, createdDs!],
+            prev.some((d) => d.id === createdDs!.id) ? prev : [...prev, createdDs!],
           );
           setActiveDatasetId(createdDs.id);
         }
@@ -1593,30 +1513,19 @@ function App() {
     }
   };
   /** 右键命中测试（最近 8px 内的数据点） */
-  const findPointAt = (
-    imgX: number,
-    imgY: number,
-  ): { dsId: string; idx: number } | null => {
+  const findPointAt = (imgX: number, imgY: number): { dsId: string; idx: number } | null => {
     if (!calibrationRef.current.isCalibrated()) return null;
     let best: { dsId: string; idx: number; d: number } | null = null;
     for (const ds of datasets) {
       for (let i = 0; i < ds.points.length; i++) {
-        const pix = calibrationRef.current.dataToPixel(
-          ds.points[i].x,
-          ds.points[i].y,
-        );
+        const pix = calibrationRef.current.dataToPixel(ds.points[i].x, ds.points[i].y);
         const d = Math.hypot(pix.x - imgX, pix.y - imgY);
         if (d <= 8 && (!best || d < best.d)) best = { dsId: ds.id, idx: i, d };
       }
     }
     return best ? { dsId: best.dsId, idx: best.idx } : null;
   };
-  const handleCanvasRightClick = (
-    imgX: number,
-    imgY: number,
-    screenX: number,
-    screenY: number,
-  ) => {
+  const handleCanvasRightClick = (imgX: number, imgY: number, screenX: number, screenY: number) => {
     const hit = findPointAt(imgX, imgY);
     setContextMenu({ x: screenX, y: screenY, imgX, imgY, hit });
   };
@@ -1627,38 +1536,20 @@ function App() {
     setColorParams((prev) => ({ ...prev, fgColor: color }));
     setColorPickMode(false);
     setDirty(true);
-    showToast(
-      t("toast.colorPicked", { r: color[0], g: color[1], b: color[2] }),
-      "success",
-    );
+    showToast(t("toast.colorPicked", { r: color[0], g: color[1], b: color[2] }), "success");
   };
   /** 画布拖拽改位（走撤销栈） */
-  const handleCanvasPointMove = (
-    dsIdx: number,
-    ptIdx: number,
-    imgX: number,
-    imgY: number,
-  ) => {
+  const handleCanvasPointMove = (dsIdx: number, ptIdx: number, imgX: number, imgY: number) => {
     const ds = datasets[dsIdx];
-    if (!ds || !ds.points[ptIdx] || !calibrationRef.current.isCalibrated())
-      return;
+    if (!ds || !ds.points[ptIdx] || !calibrationRef.current.isCalibrated()) return;
     const data = calibrationRef.current.pixelToData(imgX, imgY);
     if (!data) return;
     const [nx, ny] = data;
     const prevPoints = ds.points.map((p) => ({ x: p.x, y: p.y }));
-    const nextPoints = prevPoints.map((p, i) =>
-      i === ptIdx ? { x: nx, y: ny } : p,
-    );
+    const nextPoints = prevPoints.map((p, i) => (i === ptIdx ? { x: nx, y: ny } : p));
     const meta = { ...ds.metadata };
     undoRedoRef.current.execute(
-      makePointsCommand(
-        ds.id,
-        prevPoints,
-        nextPoints,
-        `移动点 ${ptIdx + 1}`,
-        meta,
-        meta,
-      ),
+      makePointsCommand(ds.id, prevPoints, nextPoints, `移动点 ${ptIdx + 1}`, meta, meta),
     );
     showToast(
       t("toast.pointMoved", {
@@ -1677,14 +1568,7 @@ function App() {
     const nextPoints = prevPoints.filter((_, i) => i !== idx);
     const meta = { ...ds.metadata };
     undoRedoRef.current.execute(
-      makePointsCommand(
-        dsId,
-        prevPoints,
-        nextPoints,
-        `删除点 ${idx + 1}`,
-        meta,
-        meta,
-      ),
+      makePointsCommand(dsId, prevPoints, nextPoints, `删除点 ${idx + 1}`, meta, meta),
     );
   };
   const copyPoint = async (dsId: string, idx: number) => {
@@ -1692,29 +1576,17 @@ function App() {
     const pt = ds?.points[idx];
     if (!pt) return;
     try {
-      await navigator.clipboard.writeText(
-        `${pt.x.toFixed(precision)}, ${pt.y.toFixed(precision)}`,
-      );
+      await navigator.clipboard.writeText(`${pt.x.toFixed(precision)}, ${pt.y.toFixed(precision)}`);
       showToast(t("toast.copied"), "success");
     } catch {
       showToast(t("toast.copyFail"), "error");
     }
   };
   /** 表格输入：聚焦时记录原值，失焦时压入一条撤销命令 */
-  const beginPointEdit = (
-    dsId: string,
-    idx: number,
-    axis: "x" | "y",
-    value: number,
-  ) => {
+  const beginPointEdit = (dsId: string, idx: number, axis: "x" | "y", value: number) => {
     pointEditStartRef.current = { dsId, idx, axis, prev: value };
   };
-  const changePointValue = (
-    dsId: string,
-    idx: number,
-    axis: "x" | "y",
-    raw: string,
-  ) => {
+  const changePointValue = (dsId: string, idx: number, axis: "x" | "y", raw: string) => {
     // 拒绝「清空单元格」写入 NaN（输入框失焦回滚原值），避免不可撤销的脏值污染
     if (raw.trim() === "") return;
     const v = parseFloat(raw);
@@ -1735,19 +1607,10 @@ function App() {
     const same = (Number.isNaN(cur) && Number.isNaN(s.prev)) || cur === s.prev;
     if (same) return;
     const prevPoints = ds.points.map((p) => ({ x: p.x, y: p.y }));
-    const nextPoints = prevPoints.map((p, i) =>
-      i === s.idx ? { ...p, [s.axis]: cur } : p,
-    );
+    const nextPoints = prevPoints.map((p, i) => (i === s.idx ? { ...p, [s.axis]: cur } : p));
     const meta = { ...ds.metadata };
     undoRedoRef.current.execute(
-      makePointsCommand(
-        ds.id,
-        prevPoints,
-        nextPoints,
-        `编辑点 ${s.idx + 1}`,
-        meta,
-        meta,
-      ),
+      makePointsCommand(ds.id, prevPoints, nextPoints, `编辑点 ${s.idx + 1}`, meta, meta),
     );
   };
   const openEditPoint = (dsId: string, idx: number) => {
@@ -1768,19 +1631,10 @@ function App() {
       return;
     }
     const prevPoints = ds.points.map((p) => ({ x: p.x, y: p.y }));
-    const nextPoints = prevPoints.map((p, i) =>
-      i === editPoint.idx ? { x, y } : p,
-    );
+    const nextPoints = prevPoints.map((p, i) => (i === editPoint.idx ? { x, y } : p));
     const meta = { ...ds.metadata };
     undoRedoRef.current.execute(
-      makePointsCommand(
-        ds.id,
-        prevPoints,
-        nextPoints,
-        `编辑点 ${editPoint.idx + 1}`,
-        meta,
-        meta,
-      ),
+      makePointsCommand(ds.id, prevPoints, nextPoints, `编辑点 ${editPoint.idx + 1}`, meta, meta),
     );
     setEditPoint(null);
     showToast(t("toast.pointUpdated"), "success");
@@ -1898,7 +1752,12 @@ function App() {
       const { result, mask, width, height } = await detectGrid(
         imgData,
         colorParams,
-        { hasVertical: true, hasHorizontal: true, xFrac: gridParams.xFrac, yFrac: gridParams.yFrac },
+        {
+          hasVertical: true,
+          hasHorizontal: true,
+          xFrac: gridParams.xFrac,
+          yFrac: gridParams.yFrac,
+        },
         (r) => setDetectionState({ running: "grid", progress: r }),
         () => cancelDetectionRef.current,
       );
@@ -1997,24 +1856,17 @@ function App() {
         return;
       }
       // 创建新数据集
-      const colors = [
-        "#007aff",
-        "#ff3b30",
-        "#34c759",
-        "#5856d6",
-        "#ff9500",
-        "#af52de",
-      ];
+      const colors = ["#007aff", "#ff3b30", "#34c759", "#5856d6", "#ff9500", "#af52de"];
       const dsColor = colors[datasets.length % colors.length];
       const newDs: Dataset = {
         id: generateId(),
         name: nextDatasetName(datasets),
         color: dsColor,
-points: pixelPoints.flatMap((pt): Array<{ x: number; y: number }> => {
-const data = calibrationRef.current.pixelToData(pt.x, pt.y);
-if (!data) return [];
-return [{ x: data[0], y: data[1] }];
-}),
+        points: pixelPoints.flatMap((pt): Array<{ x: number; y: number }> => {
+          const data = calibrationRef.current.pixelToData(pt.x, pt.y);
+          if (!data) return [];
+          return [{ x: data[0], y: data[1] }];
+        }),
         metadata: { area: null, moment: null },
       };
       const newDsId = newDs.id;
@@ -2099,10 +1951,7 @@ return [{ x: data[0], y: data[1] }];
           name: t("dataset.cluster", { n: i + 1 }),
           color,
           points: cl.blobs.flatMap((b): Array<{ x: number; y: number }> => {
-            const data = calibrationRef.current.pixelToData(
-              b.centroid.x,
-              b.centroid.y,
-            );
+            const data = calibrationRef.current.pixelToData(b.centroid.x, b.centroid.y);
             if (!data) return [];
             return [{ x: data[0], y: data[1] }];
           }),
@@ -2144,14 +1993,7 @@ return [{ x: data[0], y: data[1] }];
   const handleBatchSelectDir = async () => {
     const dir = await appApi.openDirectoryDialog();
     if (!dir) return;
-    const files = await appApi.listDirectory(dir, [
-      "png",
-      "jpg",
-      "jpeg",
-      "bmp",
-      "webp",
-      "gif",
-    ]);
+    const files = await appApi.listDirectory(dir, ["png", "jpg", "jpeg", "bmp", "webp", "gif"]);
     if (files.length === 0) {
       showToast(t("batch.noFiles"), "warning");
       return;
@@ -2177,9 +2019,7 @@ return [{ x: data[0], y: data[1] }];
       return;
     }
     batchCancelRef.current = false;
-    setBatchState((prev) =>
-      prev ? { ...prev!, running: true, currentIdx: 0, okCount: 0 } : prev,
-    );
+    setBatchState((prev) => (prev ? { ...prev!, running: true, currentIdx: 0, okCount: 0 } : prev));
     let ok = 0;
     let skipped = 0;
     for (let i = 0; i < batchState.files.length; i++) {
@@ -2194,8 +2034,7 @@ return [{ x: data[0], y: data[1] }];
         }
         const bytes = base64ToBytes(readResult.data);
         const ext = file.path.split(".").pop()?.toLowerCase() || "png";
-        const mime =
-          ext === "jpg" || ext === "jpeg" ? "image/jpeg" : `image/${ext}`;
+        const mime = ext === "jpg" || ext === "jpeg" ? "image/jpeg" : `image/${ext}`;
         const blob = new Blob([new Uint8Array(bytes)], { type: mime });
         // 加载图片
         const img = await new Promise<HTMLImageElement>((resolve, reject) => {
@@ -2214,8 +2053,7 @@ return [{ x: data[0], y: data[1] }];
         // 批量以当前图的标定套用，各图尺寸/几何不一致则跳过
         if (
           image &&
-          (img.naturalWidth !== image.naturalWidth ||
-            img.naturalHeight !== image.naturalHeight)
+          (img.naturalWidth !== image.naturalWidth || img.naturalHeight !== image.naturalHeight)
         ) {
           skipped++;
           continue;
@@ -2227,25 +2065,16 @@ return [{ x: data[0], y: data[1] }];
         const tmpCtx = tmpCanvas.getContext("2d");
         if (!tmpCtx) continue;
         tmpCtx.drawImage(img, 0, 0);
-        const imgData = tmpCtx.getImageData(
-          0,
-          0,
-          img.naturalWidth,
-          img.naturalHeight,
-        );
+        const imgData = tmpCtx.getImageData(0, 0, img.naturalWidth, img.naturalHeight);
         // 曲线追踪
-        const { pixelPoints } = await extractCurve(
-          imgData,
-          colorParams,
-          curveParams,
-        );
+        const { pixelPoints } = await extractCurve(imgData, colorParams, curveParams);
         if (pixelPoints.length === 0) continue;
         // 转数据坐标
-const points = pixelPoints.flatMap((pt): Array<{ x: number; y: number }> => {
-const data = calibrationRef.current.pixelToData(pt.x, pt.y);
-if (!data) return [];
-return [{ x: data[0], y: data[1] }];
-});
+        const points = pixelPoints.flatMap((pt): Array<{ x: number; y: number }> => {
+          const data = calibrationRef.current.pixelToData(pt.x, pt.y);
+          if (!data) return [];
+          return [{ x: data[0], y: data[1] }];
+        });
         // 导出 CSV
         const dsName = file.name.replace(/\.[^.]+$/, "");
         const csvText = ExportService.buildCSVText(
@@ -2280,9 +2109,7 @@ return [{ x: data[0], y: data[1] }];
         // 单张失败继续
       }
     }
-    setBatchState((prev) =>
-      prev ? { ...prev!, running: false, okCount: ok } : prev,
-    );
+    setBatchState((prev) => (prev ? { ...prev!, running: false, okCount: ok } : prev));
     showToast(
       t("batch.done", { ok, total: batchState.files.length }) +
         (skipped > 0 ? t("batch.skipped", { n: skipped }) : ""),
@@ -2305,14 +2132,13 @@ return [{ x: data[0], y: data[1] }];
     }
     const ds = datasets.find((d) => d.id === preview.dsId);
     if (!ds) return;
-const dataPoints = preview.pixelPoints.flatMap((pt): Array<{ x: number; y: number }> => {
-const data = calibrationRef.current.pixelToData(pt.x, pt.y);
-if (!data) return [];
-return [{ x: data[0], y: data[1] }];
-});
+    const dataPoints = preview.pixelPoints.flatMap((pt): Array<{ x: number; y: number }> => {
+      const data = calibrationRef.current.pixelToData(pt.x, pt.y);
+      if (!data) return [];
+      return [{ x: data[0], y: data[1] }];
+    });
     const prevPoints = ds.points.map((p) => ({ x: p.x, y: p.y }));
-    const nextPoints =
-      mode === "replace" ? dataPoints : [...prevPoints, ...dataPoints];
+    const nextPoints = mode === "replace" ? dataPoints : [...prevPoints, ...dataPoints];
     const meta = { ...ds.metadata };
     const label = preview.kind === "curve" ? "曲线追踪" : "散点检测";
     undoRedoRef.current.execute(
@@ -2371,17 +2197,9 @@ return [{ x: data[0], y: data[1] }];
       mergeMode: exportSel.mergeMode,
     };
     try {
-      const ext =
-        exportFormat === "xlsx"
-          ? "xlsx"
-          : exportFormat === "csv"
-            ? "csv"
-            : "json";
+      const ext = exportFormat === "xlsx" ? "xlsx" : exportFormat === "csv" ? "csv" : "json";
       // 去扩展名；兜底避免原名形如 ".png" 或空串时导出名变成 "_数据.csv"
-      const base =
-        originalFileName.replace(/\.[^.]+$/, "") ||
-        originalFileName ||
-        "图表数据";
+      const base = originalFileName.replace(/\.[^.]+$/, "") || originalFileName || "图表数据";
       const defaultName = base + "_数据." + ext;
       const filePath = await appApi.saveFileDialog(defaultName, [
         { name: exportFormat.toUpperCase(), extensions: [ext] },
@@ -2395,25 +2213,14 @@ return [{ x: data[0], y: data[1] }];
         extractedAt: new Date().toISOString(),
       };
       if (exportFormat === "csv") {
-        const text = ExportService.buildCSVText(
-          selected,
-          options,
-          calibConfig,
-          exportMeta,
-        );
-        success = await ExportService.saveCSVToFile(
-          text,
-          filePath,
-          exportEncoding,
-        );
+        const text = ExportService.buildCSVText(selected, options, calibConfig, exportMeta);
+        success = await ExportService.saveCSVToFile(text, filePath, exportEncoding);
       } else {
-        const blob = await ExportService.export(
-          selected,
-          options,
-          calibConfig,
-          exportMeta,
-          { colorParams, curveParams, blobParams },
-        );
+        const blob = await ExportService.export(selected, options, calibConfig, exportMeta, {
+          colorParams,
+          curveParams,
+          blobParams,
+        });
         success = await ExportService.saveBlobToFile(blob, filePath);
       }
       if (success) {
@@ -2459,18 +2266,14 @@ return [{ x: data[0], y: data[1] }];
       if (!byDs.has(iss.dsId)) byDs.set(iss.dsId, new Set());
       byDs.get(iss.dsId)!.add(iss.idx);
     });
-    const prevMap = new Map(
-      datasets.map((d) => [d.id, d.points.map((p) => ({ x: p.x, y: p.y }))]),
-    );
+    const prevMap = new Map(datasets.map((d) => [d.id, d.points.map((p) => ({ x: p.x, y: p.y }))]));
     const nextMap = new Map<string, Array<{ x: number; y: number }>>();
     datasets.forEach((d) => {
       const rm = byDs.get(d.id);
       nextMap.set(
         d.id,
         rm
-          ? d.points
-              .filter((_, i) => !rm.has(i))
-              .map((p) => ({ x: p.x, y: p.y }))
+          ? d.points.filter((_, i) => !rm.has(i)).map((p) => ({ x: p.x, y: p.y }))
           : d.points.map((p) => ({ x: p.x, y: p.y })),
       );
     });
@@ -2522,18 +2325,11 @@ return [{ x: data[0], y: data[1] }];
     };
   };
   const doAutosave = async () => {
-    if (
-      !dirtyRef.current ||
-      !imageBlobRef.current ||
-      autosaveRunningRef.current
-    )
-      return;
+    if (!dirtyRef.current || !imageBlobRef.current || autosaveRunningRef.current) return;
     // P1-1: 先将当前活动标签页快照同步到 tabs 状态，确保多标签页数据不丢
     const currentSnap = hasWork() ? captureSnapshot() : null;
     setTabs((prev) =>
-      prev.map((tab) =>
-        tab.id === activeTabId ? { ...tab, snapshot: currentSnap } : tab,
-      ),
+      prev.map((tab) => (tab.id === activeTabId ? { ...tab, snapshot: currentSnap } : tab)),
     );
     autosaveRunningRef.current = true;
     try {
@@ -2553,10 +2349,9 @@ return [{ x: data[0], y: data[1] }];
       showToast(t("toast.noSaveData"), "warning");
       return;
     }
-    const filePath = await appApi.saveFileDialog(
-      (originalFileName || "工程") + ".prj",
-      [{ name: "工程文件", extensions: ["prj"] }],
-    );
+    const filePath = await appApi.saveFileDialog((originalFileName || "工程") + ".prj", [
+      { name: "工程文件", extensions: ["prj"] },
+    ]);
     if (!filePath) return;
     const projectData = buildProjectData();
     const success = await ProjectService.saveProject(
@@ -2574,11 +2369,7 @@ return [{ x: data[0], y: data[1] }];
     }
   };
   /** 应用已解析的工程（loadProject 与会话恢复共用） */
-  const applyLoadedProject = (
-    data: ProjectData,
-    blob: Blob,
-    manifest: ProjectManifest,
-  ) => {
+  const applyLoadedProject = (data: ProjectData, blob: Blob, manifest: ProjectManifest) => {
     const url = URL.createObjectURL(blob);
     const img = new Image();
     img.onload = () => {
@@ -2629,24 +2420,25 @@ return [{ x: data[0], y: data[1] }];
   };
   const loadProject = async (filePath: string) => {
     const result = await ProjectService.loadProject(filePath);
-    if (!result || !('data' in result)) {
+    if (!result || !("data" in result)) {
       let msg = t("toast.projectLoadFail");
-      if (result && 'errorCode' in result) {
+      if (result && "errorCode" in result) {
         const ec = result.errorCode;
         if (ec === "MISSING_MANIFEST") msg = t("toast.projectLoadFail.missingManifest");
         else if (ec === "MISSING_PROJECT_JSON") msg = t("toast.projectLoadFail.missingProjectJson");
         else if (ec === "NO_IMAGE") msg = t("toast.projectLoadFail.noImage");
         else if (ec === "IMAGE_READ_FAIL") msg = t("toast.projectLoadFail.imageReadFail");
-        else if (ec === "CORRUPT") msg = t("toast.projectLoadFail.corrupt", { msg: result.reason.replace(/^CORRUPT:/, "") });
-        else if (ec === "READ_FAIL") msg = t("toast.projectLoadFail.readFail", { msg: result.reason });
+        else if (ec === "CORRUPT")
+          msg = t("toast.projectLoadFail.corrupt", { msg: result.reason.replace(/^CORRUPT:/, "") });
+        else if (ec === "READ_FAIL")
+          msg = t("toast.projectLoadFail.readFail", { msg: result.reason });
       }
       showToast(msg, "error");
       return;
     }
     applyLoadedProject(result.data, result.imageBlob, result.manifest);
     // 打开 .prj 也记录到最近文件（此前只在图片导入时记录）
-    const name =
-      filePath.split("/").pop() || filePath.split("\\").pop() || filePath;
+    const name = filePath.split("/").pop() || filePath.split("\\").pop() || filePath;
     appApi.addRecentFile({ path: filePath, name }).catch(() => {});
   };
   /** 打开内置示例工程：程序化生成示例图表、已标定数据，经统一加载链路载入 */
@@ -2679,10 +2471,7 @@ return [{ x: data[0], y: data[1] }];
       if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
         e.preventDefault();
         handleUndo();
-      } else if (
-        (e.ctrlKey || e.metaKey) &&
-        (e.key === "y" || (e.key === "z" && e.shiftKey))
-      ) {
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === "y" || (e.key === "z" && e.shiftKey))) {
         e.preventDefault();
         handleRedo();
       } else if ((e.ctrlKey || e.metaKey) && e.key === "s") {
@@ -2721,14 +2510,7 @@ return [{ x: data[0], y: data[1] }];
   }, [activeDataset]);
   // ========== 数据集管理（增删可撤销） ==========
   const addDataset = () => {
-    const colors = [
-      "#007aff",
-      "#ff3b30",
-      "#34c759",
-      "#5856d6",
-      "#ff9500",
-      "#af52de",
-    ];
+    const colors = ["#007aff", "#ff3b30", "#34c759", "#5856d6", "#ff9500", "#af52de"];
     const ds: Dataset = {
       id: generateId(),
       name: nextDatasetName(datasets),
@@ -2741,9 +2523,7 @@ return [{ x: data[0], y: data[1] }];
     setDirty(true);
     undoRedoRef.current.pushToUndo({
       execute: () => {
-        setDatasets((prev) =>
-          prev.some((d) => d.id === ds.id) ? prev : [...prev, ds],
-        );
+        setDatasets((prev) => (prev.some((d) => d.id === ds.id) ? prev : [...prev, ds]));
         setActiveDatasetId(ds.id);
       },
       undo: () => {
@@ -2751,9 +2531,7 @@ return [{ x: data[0], y: data[1] }];
         setActiveDatasetId((cur) => (cur === ds.id ? null : cur));
       },
       redo: () => {
-        setDatasets((prev) =>
-          prev.some((d) => d.id === ds.id) ? prev : [...prev, ds],
-        );
+        setDatasets((prev) => (prev.some((d) => d.id === ds.id) ? prev : [...prev, ds]));
         setActiveDatasetId(ds.id);
       },
       description: `新增数据集 ${ds.name}`,
@@ -2776,9 +2554,7 @@ return [{ x: data[0], y: data[1] }];
     setDirty(true);
     undoRedoRef.current.pushToUndo({
       execute: () => {
-        setDatasets((prev) =>
-          prev.some((d) => d.id === id) ? prev : [...prev, ds],
-        );
+        setDatasets((prev) => (prev.some((d) => d.id === id) ? prev : [...prev, ds]));
         setActiveDatasetId(id);
       },
       undo: () => {
@@ -2786,9 +2562,7 @@ return [{ x: data[0], y: data[1] }];
         setActiveDatasetId((cur) => (cur === id ? null : cur));
       },
       redo: () => {
-        setDatasets((prev) =>
-          prev.some((d) => d.id === id) ? prev : [...prev, ds],
-        );
+        setDatasets((prev) => (prev.some((d) => d.id === id) ? prev : [...prev, ds]));
         setActiveDatasetId(id);
       },
       description: `删除数据集 ${ds.name}`,
@@ -2800,14 +2574,7 @@ return [{ x: data[0], y: data[1] }];
     const prevPoints = activeDataset.points.map((p) => ({ x: p.x, y: p.y }));
     const nextPoints = prevPoints.slice(0, -1);
     const meta = { ...activeDataset.metadata };
-    const command = makePointsCommand(
-      dsId,
-      prevPoints,
-      nextPoints,
-      "删除最后一个点",
-      meta,
-      meta,
-    );
+    const command = makePointsCommand(dsId, prevPoints, nextPoints, "删除最后一个点", meta, meta);
     undoRedoRef.current.execute(command);
   };
   const clearAllPoints = () => {
@@ -2964,20 +2731,12 @@ return [{ x: data[0], y: data[1] }];
                 {t("menu.file.saveProject")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel>
-                {t("menu.file.recentFiles")}
-              </DropdownMenuLabel>
+              <DropdownMenuLabel>{t("menu.file.recentFiles")}</DropdownMenuLabel>
               {recentFiles.length === 0 ? (
-                <DropdownMenuItem disabled>
-                  {t("menu.file.noRecent")}
-                </DropdownMenuItem>
+                <DropdownMenuItem disabled>{t("menu.file.noRecent")}</DropdownMenuItem>
               ) : (
                 recentFiles.map((f, i) => (
-                  <DropdownMenuItem
-                    key={i}
-                    title={f.path}
-                    onClick={() => handleImportFile(f.path)}
-                  >
+                  <DropdownMenuItem key={i} title={f.path} onClick={() => handleImportFile(f.path)}>
                     {f.name}
                   </DropdownMenuItem>
                 ))
@@ -2997,23 +2756,14 @@ return [{ x: data[0], y: data[1] }];
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem
-                disabled={!undoMgr.canUndo()}
-                onClick={() => handleUndo()}
-              >
+              <DropdownMenuItem disabled={!undoMgr.canUndo()} onClick={() => handleUndo()}>
                 {t("menu.edit.undo")}
               </DropdownMenuItem>
-              <DropdownMenuItem
-                disabled={!undoMgr.canRedo()}
-                onClick={() => handleRedo()}
-              >
+              <DropdownMenuItem disabled={!undoMgr.canRedo()} onClick={() => handleRedo()}>
                 {t("menu.edit.redo")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                disabled={!activeDataset}
-                onClick={() => clearAllPoints()}
-              >
+              <DropdownMenuItem disabled={!activeDataset} onClick={() => clearAllPoints()}>
                 {t("menu.edit.clearDataset")}
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -3094,9 +2844,7 @@ return [{ x: data[0], y: data[1] }];
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem
-                onClick={() => showToast(t("toast.shortcuts"), "info")}
-              >
+              <DropdownMenuItem onClick={() => showToast(t("toast.shortcuts"), "info")}>
                 {t("menu.help.shortcuts")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -3187,8 +2935,7 @@ return [{ x: data[0], y: data[1] }];
             className="ribbon-btn"
             onClick={() => {
               if (ux.can("startCalibrate")) startCalibration();
-              else
-                showToast(trReason(ux.reasonFor("startCalibrate")), "warning");
+              else showToast(trReason(ux.reasonFor("startCalibrate")), "warning");
             }}
             disabled={!ux.can("startCalibrate")}
             title={t("ribbon.calibrate")}
@@ -3295,18 +3042,13 @@ return [{ x: data[0], y: data[1] }];
             tabIndex={0}
             onClick={() => {
               if (ux.can("startCalibrate")) startCalibration();
-              else
-                showToast(trReason(ux.reasonFor("startCalibrate")), "warning");
+              else showToast(trReason(ux.reasonFor("startCalibrate")), "warning");
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 if (ux.can("startCalibrate")) startCalibration();
-                else
-                  showToast(
-                    trReason(ux.reasonFor("startCalibrate")),
-                    "warning",
-                  );
+                else showToast(trReason(ux.reasonFor("startCalibrate")), "warning");
               }
             }}
             style={{ opacity: stepUsable.calibrate ? 1 : 0.4 }}
@@ -3330,8 +3072,7 @@ return [{ x: data[0], y: data[1] }];
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 if (ux.can("enterExtract")) ux.go("enterExtract");
-                else
-                  showToast(trReason(ux.reasonFor("enterExtract")), "warning");
+                else showToast(trReason(ux.reasonFor("enterExtract")), "warning");
               }
             }}
             style={{ opacity: stepUsable.extract ? 1 : 0.4 }}
@@ -3363,9 +3104,7 @@ return [{ x: data[0], y: data[1] }];
           </div>
           {recentFiles.length > 0 && (
             <>
-              <div className="wizard-section-title">
-                {t("wizard.recentFiles")}
-              </div>
+              <div className="wizard-section-title">{t("wizard.recentFiles")}</div>
               {recentFiles.map((f, i) => (
                 <div
                   key={i}
@@ -3460,9 +3199,7 @@ return [{ x: data[0], y: data[1] }];
             calibrating={ux.state === "CALIBRATING"}
             calibratePointIndex={calibratePointIndex}
             showDataPoints={
-              ux.state === "CALIBRATED" ||
-              ux.state === "EXTRACTING" ||
-              ux.state === "EXPORTING"
+              ux.state === "CALIBRATED" || ux.state === "EXTRACTING" || ux.state === "EXPORTING"
             }
             onCanvasClick={handleCanvasClick}
             onCanvasRightClick={handleCanvasRightClick}
@@ -3479,9 +3216,7 @@ return [{ x: data[0], y: data[1] }];
             showDataReadout={calibrationRef.current.isCalibrated()}
             precision={precision}
             previewPixelPoints={detectionPreview?.pixelPoints ?? null}
-            previewColor={
-              detectionPreview?.kind === "blob" ? "#ff375f" : "#ff9500"
-            }
+            previewColor={detectionPreview?.kind === "blob" ? "#ff375f" : "#ff9500"}
             // 叠加校验真正接管数据点渲染
             overlayStyle={overlayVerify ? "translucent" : "solid"}
           />
@@ -3502,18 +3237,12 @@ return [{ x: data[0], y: data[1] }];
             onKeyDown={(e) => {
               if (e.key === "ArrowLeft") {
                 e.preventDefault();
-                const n = Math.min(
-                  RIGHT_MAX,
-                  Math.max(RIGHT_MIN, rightWidth + 8),
-                );
+                const n = Math.min(RIGHT_MAX, Math.max(RIGHT_MIN, rightWidth + 8));
                 setRightWidth(n);
               }
               if (e.key === "ArrowRight") {
                 e.preventDefault();
-                const n = Math.min(
-                  RIGHT_MAX,
-                  Math.max(RIGHT_MIN, rightWidth - 8),
-                );
+                const n = Math.min(RIGHT_MAX, Math.max(RIGHT_MIN, rightWidth - 8));
                 setRightWidth(n);
               }
             }}
@@ -3529,18 +3258,14 @@ return [{ x: data[0], y: data[1] }];
             <div className="panel-section">
               <div className="panel-title">{t("panel.import.title")}</div>
               <div className="help-text" style={{ marginBottom: 12 }}>
-                {image
-                  ? t("panel.import.help.withImage")
-                  : t("panel.import.help.noImage")}
+                {image ? t("panel.import.help.withImage") : t("panel.import.help.noImage")}
               </div>
               <button
                 className="panel-btn primary full"
                 onClick={() => handleImportFile()}
                 style={{ marginBottom: 8 }}
               >
-                {image
-                  ? t("panel.import.changeImage")
-                  : t("panel.import.openFile")}
+                {image ? t("panel.import.changeImage") : t("panel.import.openFile")}
               </button>
               {!image && (
                 <button
@@ -3569,11 +3294,7 @@ return [{ x: data[0], y: data[1] }];
                   className="panel-btn full"
                   onClick={() => {
                     if (ux.can("startCalibrate")) startCalibration();
-                    else
-                      showToast(
-                        trReason(ux.reasonFor("startCalibrate")),
-                        "warning",
-                      );
+                    else showToast(trReason(ux.reasonFor("startCalibrate")), "warning");
                   }}
                   style={{ marginTop: 8 }}
                 >
@@ -3582,17 +3303,11 @@ return [{ x: data[0], y: data[1] }];
               )}
               {pdfState && pdfState.numPages > 1 && (
                 <div style={{ marginTop: 12 }}>
-                  <div
-                    className="panel-title"
-                    style={{ fontSize: 12, marginBottom: 6 }}
-                  >
+                  <div className="panel-title" style={{ fontSize: 12, marginBottom: 6 }}>
                     {t("panel.import.pdfPages")}
                   </div>
                   <div className="dataset-tabs">
-                    {Array.from(
-                      { length: pdfState.numPages },
-                      (_, i) => i + 1,
-                    ).map((p) => (
+                    {Array.from({ length: pdfState.numPages }, (_, i) => i + 1).map((p) => (
                       <div
                         key={p}
                         className="dataset-tab"
@@ -3625,8 +3340,7 @@ return [{ x: data[0], y: data[1] }];
                   {calibratePointIndex < 4
                     ? t("guide.calibrate.title", {
                         n: String(calibratePointIndex + 1),
-                        label:
-                          calibConfig.points[calibratePointIndex]?.label ?? "",
+                        label: calibConfig.points[calibratePointIndex]?.label ?? "",
                       })
                     : t("guide.calibrate.done")}
                   <span className="sub">
@@ -3655,9 +3369,7 @@ return [{ x: data[0], y: data[1] }];
                       setDirty(true);
                     }}
                   >
-                    <option value="linear">
-                      {t("panel.calibrate.linear")}
-                    </option>
+                    <option value="linear">{t("panel.calibrate.linear")}</option>
                     <option value="log">{t("panel.calibrate.log")}</option>
                   </select>
                 </div>
@@ -3677,9 +3389,7 @@ return [{ x: data[0], y: data[1] }];
                       setDirty(true);
                     }}
                   >
-                    <option value="linear">
-                      {t("panel.calibrate.linear")}
-                    </option>
+                    <option value="linear">{t("panel.calibrate.linear")}</option>
                     <option value="log">{t("panel.calibrate.log")}</option>
                   </select>
                 </div>
@@ -3704,12 +3414,9 @@ return [{ x: data[0], y: data[1] }];
                 </div>
               </div>
               <div className="panel-section">
-                <div className="panel-title">
-                  {t("panel.calibrate.pointsTitle")}
-                </div>
+                <div className="panel-title">{t("panel.calibrate.pointsTitle")}</div>
                 {calibConfig.points.map((pt, i) => {
-                  const axis =
-                    pt.role === "xmin" || pt.role === "xmax" ? "x" : "y";
+                  const axis = pt.role === "xmin" || pt.role === "xmax" ? "x" : "y";
                   const val = axis === "x" ? pt.dx : pt.dy;
                   return (
                     <div key={i} className="calib-point-row">
@@ -3726,23 +3433,15 @@ return [{ x: data[0], y: data[1] }];
                         value={val ?? ""}
                         onChange={(e) => setPointValue(i, axis, e.target.value)}
                       />
-                      <span
-                        className={`point-state ${pt.placed ? "set" : "unset"}`}
-                      >
-                        {pt.placed ? (
-                          <CheckIcon size={12} />
-                        ) : (
-                          <CircleIcon size={12} />
-                        )}
+                      <span className={`point-state ${pt.placed ? "set" : "unset"}`}>
+                        {pt.placed ? <CheckIcon size={12} /> : <CircleIcon size={12} />}
                       </span>
                     </div>
                   );
                 })}
               </div>
               <div className="panel-section">
-                <div className="panel-title">
-                  {t("panel.calibrate.axisMeta")}
-                </div>
+                <div className="panel-title">{t("panel.calibrate.axisMeta")}</div>
                 <div className="panel-row">
                   <span className="panel-label" aria-hidden="true">
                     {t("panel.calibrate.xLabel")}
@@ -3884,10 +3583,7 @@ return [{ x: data[0], y: data[1] }];
                       className={`dataset-tab ${ds.id === activeDatasetId ? "active" : ""}`}
                       onClick={() => setActiveDatasetId(ds.id)}
                     >
-                      <span
-                        className="dataset-color-dot"
-                        style={{ background: ds.color }}
-                      />
+                      <span className="dataset-color-dot" style={{ background: ds.color }} />
                       {ds.name} ({ds.points.length})
                       <span
                         className="dataset-tab-close"
@@ -3936,10 +3632,7 @@ return [{ x: data[0], y: data[1] }];
                   </div>
                 </Section>
               )}
-              <Section
-                title={t("panel.extract.autoDetect")}
-                defaultOpen={false}
-              >
+              <Section title={t("panel.extract.autoDetect")} defaultOpen={false}>
                 <div className="panel-section-inner">
                   <div className="detect-intro">{t("detect.intro")}</div>
                   <div className="detect-flow">
@@ -3976,13 +3669,8 @@ return [{ x: data[0], y: data[1] }];
                           background: `rgb(${colorParams.fgColor.join(",")})`,
                         }}
                       />
-                      <button
-                        className="panel-btn"
-                        onClick={() => setColorPickMode((m) => !m)}
-                      >
-                        {colorPickMode
-                          ? t("detect.cancelPick")
-                          : t("detect.pick")}
+                      <button className="panel-btn" onClick={() => setColorPickMode((m) => !m)}>
+                        {colorPickMode ? t("detect.cancelPick") : t("detect.pick")}
                       </button>
                     </div>
                   </div>
@@ -4030,9 +3718,7 @@ return [{ x: data[0], y: data[1] }];
                         setDirty(true);
                       }}
                     />
-                    <span className="slider-value">
-                      {colorParams.colorDistance}
-                    </span>
+                    <span className="slider-value">{colorParams.colorDistance}</span>
                   </div>
                   <div className="detect-tip">{t("detect.tolerance.tip")}</div>
                   {/* 实时掩码预览 */}
@@ -4046,9 +3732,7 @@ return [{ x: data[0], y: data[1] }];
                       {t("detect.livePreview")}
                     </label>
                   </div>
-                  <div className="detect-tip">
-                    {t("detect.livePreview.tip")}
-                  </div>
+                  <div className="detect-tip">{t("detect.livePreview.tip")}</div>
                   {/* ===== 曲线自动追踪 ===== */}
                   <div className="detect-group-title">
                     <span className="dot" />
@@ -4147,9 +3831,7 @@ return [{ x: data[0], y: data[1] }];
                       }}
                     />
                   </div>
-                  <div className="detect-tip">
-                    {t("detect.minDiameter.tip")}
-                  </div>
+                  <div className="detect-tip">{t("detect.minDiameter.tip")}</div>
                   <div className="panel-row" style={{ marginTop: 8 }}>
                     <span className="panel-label" aria-hidden="true">
                       {t("detect.maxDiameter")}
@@ -4168,9 +3850,7 @@ return [{ x: data[0], y: data[1] }];
                       }}
                     />
                   </div>
-                  <div className="detect-tip">
-                    {t("detect.maxDiameter.tip")}
-                  </div>
+                  <div className="detect-tip">{t("detect.maxDiameter.tip")}</div>
                   <button
                     className="panel-btn primary full"
                     onClick={runBlobDetection}
@@ -4258,9 +3938,7 @@ return [{ x: data[0], y: data[1] }];
                       <span className="sub" />
                     </span>
                   </div>
-                  <div className="detect-tip">
-                    {t("detect.blobColorCluster.tip")}
-                  </div>
+                  <div className="detect-tip">{t("detect.blobColorCluster.tip")}</div>
                   <button
                     className="panel-btn primary full"
                     onClick={handleBlobColorCluster}
@@ -4276,9 +3954,7 @@ return [{ x: data[0], y: data[1] }];
                       <span className="sub" />
                     </span>
                   </div>
-                  <div className="detect-tip">
-                    {t("detect.overlayVerify.tip")}
-                  </div>
+                  <div className="detect-tip">{t("detect.overlayVerify.tip")}</div>
                   <div className="panel-row" style={{ marginTop: 8 }}>
                     <label className="checkbox-row">
                       <input
@@ -4286,9 +3962,7 @@ return [{ x: data[0], y: data[1] }];
                         checked={overlayVerify}
                         onChange={(e) => setOverlayVerify(e.target.checked)}
                       />
-                      {overlayVerify
-                        ? t("detect.overlayOn")
-                        : t("detect.overlayOff")}
+                      {overlayVerify ? t("detect.overlayOn") : t("detect.overlayOff")}
                     </label>
                   </div>
                 </div>
@@ -4317,11 +3991,7 @@ return [{ x: data[0], y: data[1] }];
                         {activeDataset.points.map((pt, i) => (
                           <tr
                             key={i}
-                            className={
-                              issueSet.has(`${activeDataset.id}:${i}`)
-                                ? "issue"
-                                : ""
-                            }
+                            className={issueSet.has(`${activeDataset.id}:${i}`) ? "issue" : ""}
                           >
                             <td className="idx">{i + 1}</td>
                             <td>
@@ -4330,21 +4000,13 @@ return [{ x: data[0], y: data[1] }];
                                 type="number"
                                 step={Math.pow(10, -Math.min(precision, 6))}
                                 value={Number.isFinite(pt.x) ? pt.x : ""}
-                                onFocus={() =>
-                                  beginPointEdit(activeDataset.id, i, "x", pt.x)
-                                }
+                                onFocus={() => beginPointEdit(activeDataset.id, i, "x", pt.x)}
                                 onChange={(e) =>
-                                  changePointValue(
-                                    activeDataset.id,
-                                    i,
-                                    "x",
-                                    e.target.value,
-                                  )
+                                  changePointValue(activeDataset.id, i, "x", e.target.value)
                                 }
                                 onBlur={commitPointEdit}
                                 onKeyDown={(e) => {
-                                  if (e.key === "Enter")
-                                    (e.target as HTMLInputElement).blur();
+                                  if (e.key === "Enter") (e.target as HTMLInputElement).blur();
                                 }}
                                 aria-label={t("table.cellX", { n: i + 1 })}
                               />
@@ -4355,21 +4017,13 @@ return [{ x: data[0], y: data[1] }];
                                 type="number"
                                 step={Math.pow(10, -Math.min(precision, 6))}
                                 value={Number.isFinite(pt.y) ? pt.y : ""}
-                                onFocus={() =>
-                                  beginPointEdit(activeDataset.id, i, "y", pt.y)
-                                }
+                                onFocus={() => beginPointEdit(activeDataset.id, i, "y", pt.y)}
                                 onChange={(e) =>
-                                  changePointValue(
-                                    activeDataset.id,
-                                    i,
-                                    "y",
-                                    e.target.value,
-                                  )
+                                  changePointValue(activeDataset.id, i, "y", e.target.value)
                                 }
                                 onBlur={commitPointEdit}
                                 onKeyDown={(e) => {
-                                  if (e.key === "Enter")
-                                    (e.target as HTMLInputElement).blur();
+                                  if (e.key === "Enter") (e.target as HTMLInputElement).blur();
                                 }}
                                 aria-label={t("table.cellY", { n: i + 1 })}
                               />
@@ -4385,9 +4039,7 @@ return [{ x: data[0], y: data[1] }];
                               </button>
                               <button
                                 className="table-cell-btn"
-                                onClick={() =>
-                                  deletePointAt(activeDataset.id, i)
-                                }
+                                onClick={() => deletePointAt(activeDataset.id, i)}
                                 title={t("ctx.deletePoint")}
                                 aria-label={t("table.deletePoint", {
                                   n: i + 1,
@@ -4417,11 +4069,7 @@ return [{ x: data[0], y: data[1] }];
                   })}
                 </div>
                 {datasets.map((ds) => (
-                  <div
-                    key={ds.id}
-                    className="calib-point-row"
-                    style={{ marginBottom: 4 }}
-                  >
+                  <div key={ds.id} className="calib-point-row" style={{ marginBottom: 4 }}>
                     <span
                       className="dataset-color-dot"
                       style={{
@@ -4443,10 +4091,7 @@ return [{ x: data[0], y: data[1] }];
                 )}
               </div>
               <div className="panel-section">
-                <button
-                  className="panel-btn primary full"
-                  onClick={openExportModal}
-                >
+                <button className="panel-btn primary full" onClick={openExportModal}>
                   {t("panel.export.openDialog")}
                 </button>
                 <button
@@ -4466,20 +4111,15 @@ return [{ x: data[0], y: data[1] }];
         <div className="status-item">
           {t("status.state")}: {t(`uxstate.${ux.state}` as never)}
         </div>
-        {isDirty && (
-          <div className="status-item dirty">{t("status.unsaved")}</div>
-        )}
+        {isDirty && <div className="status-item dirty">{t("status.unsaved")}</div>}
         <div className="status-item">
           {calibrationRef.current.isCalibrated()
             ? t("status.calibrated")
             : t("status.notCalibrated")}
-          {calibResidual > 0
-            ? ` ${t("status.residual", { val: calibResidual.toFixed(2) })}`
-            : ""}
+          {calibResidual > 0 ? ` ${t("status.residual", { val: calibResidual.toFixed(2) })}` : ""}
         </div>
         <div className="status-item">
-          {t("status.calibPoints")}:{" "}
-          {calibConfig.points.filter((p) => p.placed).length}/4
+          {t("status.calibPoints")}: {calibConfig.points.filter((p) => p.placed).length}/4
         </div>
         <div className="status-item">
           {t("status.dataPoints")}: {totalPoints}
@@ -4489,24 +4129,16 @@ return [{ x: data[0], y: data[1] }];
             {t("status.issues", { n: validationIssues.length })}
           </div>
         )}
-        {colorPickMode && (
-          <div className="status-item">{t("status.colorPick")}</div>
-        )}
+        {colorPickMode && <div className="status-item">{t("status.colorPick")}</div>}
         <div className="status-spacer" />
         <div className="status-item">{t("status.offline")}</div>
         <div className="status-item">
-          {undoMgr.canUndo()
-            ? `${t("status.canUndo")}: ${undoMgr.getUndoDescription()}`
-            : ""}
+          {undoMgr.canUndo() ? `${t("status.canUndo")}: ${undoMgr.getUndoDescription()}` : ""}
         </div>
         <div className="status-item">
-          {undoMgr.canRedo()
-            ? `${t("status.canRedo")}: ${undoMgr.getRedoDescription()}`
-            : ""}
+          {undoMgr.canRedo() ? `${t("status.canRedo")}: ${undoMgr.getRedoDescription()}` : ""}
         </div>
-        <div className="status-item">
-          {t("status.version", { version: APP_VERSION })}
-        </div>
+        <div className="status-item">{t("status.version", { version: APP_VERSION })}</div>
       </div>
       {/* 右键菜单（Radix ContextMenu 受控模式：右键定位、键盘导航、Portal 渲染均内置） */}
       <ContextMenu
@@ -4516,69 +4148,70 @@ return [{ x: data[0], y: data[1] }];
         }}
       >
         <ContextMenuTrigger asChild>
-          <div style={{ position: "absolute", top: 0, left: 0, width: 0, height: 0, pointerEvents: "none" }} />
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 0,
+              height: 0,
+              pointerEvents: "none",
+            }}
+          />
         </ContextMenuTrigger>
         {contextMenu && (
-        <ContextMenuContent
-          style={{ left: contextMenu.x, top: contextMenu.y }}
-        >
-              {contextMenu.hit ? (
-                <>
-                  <ContextMenuItem
-                    onClick={() => {
-                      openEditPoint(
-                        contextMenu.hit!.dsId,
-                        contextMenu.hit!.idx,
-                      );
-                      setContextMenu(null);
-                    }}
-                  >
-                    {t("ctx.editPoint")}
-                  </ContextMenuItem>
-                  <ContextMenuItem
-                    variant="destructive"
-                    onClick={() => {
-                      deletePointAt(
-                        contextMenu.hit!.dsId,
-                        contextMenu.hit!.idx,
-                      );
-                      setContextMenu(null);
-                    }}
-                  >
-                    {t("ctx.deletePoint")}
-                  </ContextMenuItem>
-                </>
-              ) : (
-                <>
-                  <ContextMenuItem
-                    onClick={() => {
-                      deleteLastPoint();
-                      setContextMenu(null);
-                    }}
-                  >
-                    {t("ctx.deleteLastPoint")}
-                  </ContextMenuItem>
-                  <ContextMenuItem
-                    variant="destructive"
-                    onClick={() => {
-                      clearAllPoints();
-                      setContextMenu(null);
-                    }}
-                  >
-                    {t("ctx.clearAll")}
-                  </ContextMenuItem>
-                </>
-              )}
-              <ContextMenuSeparator />
-              <ContextMenuItem
-                onClick={() => {
-                  setColorPickMode(true);
-                  setContextMenu(null);
-                }}
-              >
-                {t("ctx.pickColor")}
-              </ContextMenuItem>
-        </ContextMenuContent>
+          <ContextMenuContent style={{ left: contextMenu.x, top: contextMenu.y }}>
+            {contextMenu.hit ? (
+              <>
+                <ContextMenuItem
+                  onClick={() => {
+                    openEditPoint(contextMenu.hit!.dsId, contextMenu.hit!.idx);
+                    setContextMenu(null);
+                  }}
+                >
+                  {t("ctx.editPoint")}
+                </ContextMenuItem>
+                <ContextMenuItem
+                  variant="destructive"
+                  onClick={() => {
+                    deletePointAt(contextMenu.hit!.dsId, contextMenu.hit!.idx);
+                    setContextMenu(null);
+                  }}
+                >
+                  {t("ctx.deletePoint")}
+                </ContextMenuItem>
+              </>
+            ) : (
+              <>
+                <ContextMenuItem
+                  onClick={() => {
+                    deleteLastPoint();
+                    setContextMenu(null);
+                  }}
+                >
+                  {t("ctx.deleteLastPoint")}
+                </ContextMenuItem>
+                <ContextMenuItem
+                  variant="destructive"
+                  onClick={() => {
+                    clearAllPoints();
+                    setContextMenu(null);
+                  }}
+                >
+                  {t("ctx.clearAll")}
+                </ContextMenuItem>
+              </>
+            )}
+            <ContextMenuSeparator />
+            <ContextMenuItem
+              onClick={() => {
+                setColorPickMode(true);
+                setContextMenu(null);
+              }}
+            >
+              {t("ctx.pickColor")}
+            </ContextMenuItem>
+          </ContextMenuContent>
         )}
       </ContextMenu>
       {/* 检测结果预览确认— Radix Dialog */}
@@ -4609,22 +4242,13 @@ return [{ x: data[0], y: data[1] }];
             )}
           </div>
           <DialogFooter>
-            <button
-              className="panel-btn"
-              onClick={() => applyDetection("discard")}
-            >
+            <button className="panel-btn" onClick={() => applyDetection("discard")}>
               {t("detect.confirm.discard")}
             </button>
-            <button
-              className="panel-btn"
-              onClick={() => applyDetection("append")}
-            >
+            <button className="panel-btn" onClick={() => applyDetection("append")}>
               {t("detect.confirm.append")}
             </button>
-            <button
-              className="panel-btn primary"
-              onClick={() => applyDetection("replace")}
-            >
+            <button className="panel-btn primary" onClick={() => applyDetection("replace")}>
               {t("detect.confirm.replace")}
             </button>
           </DialogFooter>
@@ -4637,11 +4261,7 @@ return [{ x: data[0], y: data[1] }];
           if (!open) setEditPoint(null);
         }}
       >
-        <DialogContent
-          aria-label={
-            editPoint ? t("editPoint.title", { n: editPoint.idx + 1 }) : ""
-          }
-        >
+        <DialogContent aria-label={editPoint ? t("editPoint.title", { n: editPoint.idx + 1 }) : ""}>
           <DialogHeader>
             {editPoint ? t("editPoint.title", { n: editPoint.idx + 1 }) : ""}
             {editPoint && datasets.find((d) => d.id === editPoint.dsId)
@@ -4655,9 +4275,7 @@ return [{ x: data[0], y: data[1] }];
                 className="panel-input"
                 type="number"
                 value={editPointDraft.x}
-                onChange={(e) =>
-                  setEditPointDraft((d) => ({ ...d, x: e.target.value }))
-                }
+                onChange={(e) => setEditPointDraft((d) => ({ ...d, x: e.target.value }))}
                 aria-label="X"
               />
             </div>
@@ -4667,9 +4285,7 @@ return [{ x: data[0], y: data[1] }];
                 className="panel-input"
                 type="number"
                 value={editPointDraft.y}
-                onChange={(e) =>
-                  setEditPointDraft((d) => ({ ...d, y: e.target.value }))
-                }
+                onChange={(e) => setEditPointDraft((d) => ({ ...d, y: e.target.value }))}
                 aria-label="Y"
               />
             </div>
@@ -4707,10 +4323,7 @@ return [{ x: data[0], y: data[1] }];
             )}
           </div>
           <DialogFooter>
-            <button
-              className="panel-btn"
-              onClick={() => setExportWarning(null)}
-            >
+            <button className="panel-btn" onClick={() => setExportWarning(null)}>
               {t("validate.cancel")}
             </button>
             <button className="panel-btn" onClick={removeIssuesAndExport}>
@@ -4752,11 +4365,7 @@ return [{ x: data[0], y: data[1] }];
                 <div className="help-text">{t("export.noDatasets")}</div>
               ) : (
                 datasets.map((ds) => (
-                  <label
-                    key={ds.id}
-                    className="checkbox-row"
-                    style={{ marginBottom: 4 }}
-                  >
+                  <label key={ds.id} className="checkbox-row" style={{ marginBottom: 4 }}>
                     <input
                       type="checkbox"
                       checked={exportSel.datasetIds.includes(ds.id)}
@@ -4772,10 +4381,7 @@ return [{ x: data[0], y: data[1] }];
                         }));
                       }}
                     />
-                    <span
-                      className="dataset-color-dot"
-                      style={{ background: ds.color }}
-                    />
+                    <span className="dataset-color-dot" style={{ background: ds.color }} />
                     {t("dataset.count", { name: ds.name, n: ds.points.length })}
                   </label>
                 ))
@@ -4787,9 +4393,7 @@ return [{ x: data[0], y: data[1] }];
                 className="panel-input"
                 value={exportSel.xColumn}
                 placeholder={calibConfig.xLabel || "X"}
-                onChange={(e) =>
-                  setExportSel((s) => ({ ...s, xColumn: e.target.value }))
-                }
+                onChange={(e) => setExportSel((s) => ({ ...s, xColumn: e.target.value }))}
                 aria-label={t("export.xColumn")}
               />
             </div>
@@ -4799,9 +4403,7 @@ return [{ x: data[0], y: data[1] }];
                 className="panel-input"
                 value={exportSel.yColumn}
                 placeholder={calibConfig.yLabel || "Y"}
-                onChange={(e) =>
-                  setExportSel((s) => ({ ...s, yColumn: e.target.value }))
-                }
+                onChange={(e) => setExportSel((s) => ({ ...s, yColumn: e.target.value }))}
                 aria-label={t("export.yColumn")}
               />
             </div>
@@ -4855,9 +4457,7 @@ return [{ x: data[0], y: data[1] }];
                   className="panel-select"
                   aria-label={t("export.encoding")}
                   value={exportEncoding}
-                  onChange={(e) =>
-                    setExportEncoding(e.target.value as "utf-8" | "gbk")
-                  }
+                  onChange={(e) => setExportEncoding(e.target.value as "utf-8" | "gbk")}
                 >
                   <option value="utf-8">{t("export.encoding.utf8")}</option>
                   <option value="gbk">{t("export.encoding.gbk")}</option>
@@ -4914,10 +4514,8 @@ return [{ x: data[0], y: data[1] }];
             <div style={{ marginTop: 16 }}>
               <div className="panel-title">{t("export.previewTitle")}</div>
               <div className="data-preview">
-                {datasets.filter(
-                  (d) =>
-                    exportSel.datasetIds.includes(d.id) && d.points.length > 0,
-                ).length === 0 ? (
+                {datasets.filter((d) => exportSel.datasetIds.includes(d.id) && d.points.length > 0)
+                  .length === 0 ? (
                   <div className="help-text" style={{ padding: 8 }}>
                     {t("export.noDataSelected")}
                   </div>
@@ -4933,23 +4531,21 @@ return [{ x: data[0], y: data[1] }];
                     </thead>
                     <tbody>
                       {datasets
-                        .filter(
-                          (d) =>
-                            exportSel.datasetIds.includes(d.id) &&
-                            d.points.length > 0,
-                        )
+                        .filter((d) => exportSel.datasetIds.includes(d.id) && d.points.length > 0)
                         .flatMap((ds) =>
                           ds.points.slice(0, 5).map((pt, i) => (
                             <tr
                               key={`${ds.id}-${i}`}
-                              className={
-                                issueSet.has(`${ds.id}:${i}`) ? "issue" : ""
-                              }
+                              className={issueSet.has(`${ds.id}:${i}`) ? "issue" : ""}
                             >
                               <td>{i === 0 ? ds.name : ""}</td>
                               <td className="idx">{i + 1}</td>
-                              <td>{Number.isFinite(pt.x) ? pt.x.toFixed(precision) : String(pt.x)}</td>
-                              <td>{Number.isFinite(pt.y) ? pt.y.toFixed(precision) : String(pt.y)}</td>
+                              <td>
+                                {Number.isFinite(pt.x) ? pt.x.toFixed(precision) : String(pt.x)}
+                              </td>
+                              <td>
+                                {Number.isFinite(pt.y) ? pt.y.toFixed(precision) : String(pt.y)}
+                              </td>
                             </tr>
                           )),
                         )}
@@ -4990,9 +4586,7 @@ return [{ x: data[0], y: data[1] }];
               >
                 <BarChartIcon size={48} />
               </div>
-              <div style={{ fontWeight: 700, fontSize: 18 }}>
-                ChartExtractor
-              </div>
+              <div style={{ fontWeight: 700, fontSize: 18 }}>ChartExtractor</div>
               <div
                 style={{
                   color: "var(--text-secondary, #8e8e93)",
@@ -5054,10 +4648,7 @@ return [{ x: data[0], y: data[1] }];
             </div>
           </div>
           <DialogFooter>
-            <button
-              className="panel-btn primary"
-              onClick={() => setShowAbout(false)}
-            >
+            <button className="panel-btn primary" onClick={() => setShowAbout(false)}>
               {t("about.close")}
             </button>
           </DialogFooter>
@@ -5146,21 +4737,15 @@ return [{ x: data[0], y: data[1] }];
                           i === batchState!.currentIdx && batchState!.running
                             ? "var(--bg-accent, #e8e8ed)"
                             : "transparent",
-                        fontWeight:
-                          i === batchState!.currentIdx && batchState!.running
-                            ? 600
-                            : 400,
+                        fontWeight: i === batchState!.currentIdx && batchState!.running ? 600 : 400,
                       }}
                     >
                       {i < batchState!.currentIdx ? (
                         <CheckIcon size={12} />
-                      ) : i === batchState!.currentIdx &&
-                        batchState!.running ? (
+                      ) : i === batchState!.currentIdx && batchState!.running ? (
                         <LoaderIcon size={12} className="spin" />
                       ) : (
-                        <span style={{ fontSize: 10, opacity: 0.4 }}>
-                          {i + 1}
-                        </span>
+                        <span style={{ fontSize: 10, opacity: 0.4 }}>{i + 1}</span>
                       )}
                       <span
                         style={{
@@ -5179,8 +4764,8 @@ return [{ x: data[0], y: data[1] }];
                 <div className="help-text">{t("batch.noFiles")}</div>
               )}
             </div>
-{!calibrationRef.current.isCalibrated() && (
-          <div className="help-text warn-text" style={{ marginTop: 8 }}>
+            {!calibrationRef.current.isCalibrated() && (
+              <div className="help-text warn-text" style={{ marginTop: 8 }}>
                 ⚠ {t("batch.needCalib")}
               </div>
             )}
@@ -5202,8 +4787,7 @@ return [{ x: data[0], y: data[1] }];
                 className="panel-btn primary"
                 onClick={handleBatchRun}
                 disabled={
-                  (batchState?.files.length ?? 0) === 0 ||
-                  !calibrationRef.current.isCalibrated()
+                  (batchState?.files.length ?? 0) === 0 || !calibrationRef.current.isCalibrated()
                 }
               >
                 {t("batch.start")}
@@ -5213,7 +4797,12 @@ return [{ x: data[0], y: data[1] }];
         </DialogContent>
       </Dialog>
       {/* P0-1: 应用内确认 Dialog — 替代 window.confirm */}
-      <Dialog open={confirmState.open} onOpenChange={(v) => { if (!v) closeConfirm(false); }}>
+      <Dialog
+        open={confirmState.open}
+        onOpenChange={(v) => {
+          if (!v) closeConfirm(false);
+        }}
+      >
         <DialogContent style={{ maxWidth: 400 }} showCloseButton={false}>
           <DialogHeader>{t("toast.confirmTitle")}</DialogHeader>
           <div className="modal-body">{confirmState.message}</div>

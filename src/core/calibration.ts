@@ -42,21 +42,13 @@ export class Calibration {
   /** 重投影残差（像素），标定质量指示（UX 方案 质量信号） */
   private residual = 0;
   /** 对数变换：将数据值转换为对数空间 */
-  private toLogSpace(
-    value: number,
-    isLog: boolean,
-    isNegative: boolean,
-  ): number {
+  private toLogSpace(value: number, isLog: boolean, isNegative: boolean): number {
     if (!isLog) return value;
     if (isNegative) return Math.log(-value) / Math.log(10);
     return Math.log(value) / Math.log(10);
   }
   /** 对数逆变换：从对数空间恢复数据值 */
-  private fromLogSpace(
-    value: number,
-    isLog: boolean,
-    isNegative: boolean,
-  ): number {
+  private fromLogSpace(value: number, isLog: boolean, isNegative: boolean): number {
     if (!isLog) return value;
     if (isNegative) return -Math.pow(10, value);
     return Math.pow(10, value);
@@ -82,9 +74,7 @@ export class Calibration {
     // 原逻辑要求每点同时具备 dx 与 dy，导致 allFilled 恒为 false、标定永远无法提交。
     const allFilled = points.every((p, i) => {
       const isX = roleOf(p, i) === "xmin" || roleOf(p, i) === "xmax";
-      return (
-        p.px != null && p.py != null && (isX ? p.dx != null : p.dy != null)
-      );
+      return p.px != null && p.py != null && (isX ? p.dx != null : p.dy != null);
     });
     if (!allFilled) return false;
     const p1 = points[0]; // xmin
@@ -103,7 +93,7 @@ export class Calibration {
     // 对数轴处理
     if (this.isLogX) {
       // P2-17 修复：对数轴数值必须同号且非零，否则返回 false
-      if (xmin === 0 || xmax === 0 || (xmin > 0) !== (xmax > 0)) {
+      if (xmin === 0 || xmax === 0 || xmin > 0 !== xmax > 0) {
         this.residual = Infinity;
         return false;
       }
@@ -118,7 +108,7 @@ export class Calibration {
     }
     if (this.isLogY) {
       // P2-17 修复：对数轴数值必须同号且非零
-      if (ymin === 0 || ymax === 0 || (ymin > 0) !== (ymax > 0)) {
+      if (ymin === 0 || ymax === 0 || ymin > 0 !== ymax > 0) {
         this.residual = Infinity;
         return false;
       }
@@ -144,10 +134,7 @@ export class Calibration {
     if (this.noRotation) {
       const dxPix = p2.px - p1.px;
       const dyPix = p4.py - p3.py;
-      if (
-        Math.abs(this.aMat[0] * this.aMat[3]) >
-        Math.abs(this.aMat[1] * this.aMat[2])
-      ) {
+      if (Math.abs(this.aMat[0] * this.aMat[3]) > Math.abs(this.aMat[1] * this.aMat[2])) {
         this.aMat[1] = 0;
         this.aMat[2] = 0;
         this.aMat[0] = Math.abs(dxPix) > 1e-12 ? (xmax - xmin) / dxPix : 0;

@@ -19,9 +19,7 @@ export interface ToastItem {
 let toastIdCounter = 0;
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
-  const timersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(
-    new Map(),
-  );
+  const timersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
   const dismiss = useCallback((id: number) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
     const timer = timersRef.current.get(id);
@@ -31,10 +29,7 @@ export function useToasts() {
     }
   }, []);
   const toast = useCallback(
-    (
-      msg: string | null,
-      type: "success" | "error" | "warning" | "info" = "info",
-    ) => {
+    (msg: string | null, type: "success" | "error" | "warning" | "info" = "info") => {
       if (!msg) return;
       const id = ++toastIdCounter;
       setToasts((prev) => [...prev, { id, msg, type }]);
@@ -78,11 +73,7 @@ export function ToastContainer({
   if (toasts.length === 0) return null;
   return (
     // 异步反馈对读屏可见（错误用 assertive alert，其余用 polite status）
-    <div
-      className="toast-container"
-      role="region"
-      aria-label={t("a11y.notifications")}
-    >
+    <div className="toast-container" role="region" aria-label={t("a11y.notifications")}>
       {toasts.map((tItem) => {
         const Icon = toastIcons[tItem.type];
         return (
@@ -92,10 +83,7 @@ export function ToastContainer({
             role={tItem.type === "error" ? "alert" : "status"}
             aria-live={tItem.type === "error" ? "assertive" : "polite"}
           >
-            <Icon
-              size={16}
-              style={{ color: toastColors[tItem.type], flexShrink: 0 }}
-            />
+            <Icon size={16} style={{ color: toastColors[tItem.type], flexShrink: 0 }} />
             <span style={{ flex: 1 }}>{tItem.msg}</span>
             <button
               className="toast-close-btn"

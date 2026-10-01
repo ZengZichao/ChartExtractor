@@ -52,12 +52,7 @@ export {
   ContextMenuRadioGroup,
 } from "./context-menu";
 export { Slider } from "./slider";
-export {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from "./tooltip";
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./tooltip";
 export { Progress } from "./progress";
 export { Separator } from "./separator";
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs";

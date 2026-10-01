@@ -14,9 +14,14 @@
     "typecheck": "tsc --noEmit",
     "tauri": "tauri",
     "package": "tauri build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint:offline": "node scripts/lint-offline.js",
     "lint:i18n": "node scripts/lint-i18n.js",
-    "test": "vitest run && node scripts/lint-offline.js && node scripts/lint-i18n.js",
+    "lint:rs": "cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --all-features -- -D warnings",
+    "format:rs": "cargo fmt --manifest-path src-tauri/Cargo.toml --all",
+    "test:rs": "cargo test --manifest-path src-tauri/Cargo.toml",
+    "test": "prettier --check . && vitest run && node scripts/lint-offline.js && node scripts/lint-i18n.js",
     "test:watch": "vitest"
   },
   "dependencies": {

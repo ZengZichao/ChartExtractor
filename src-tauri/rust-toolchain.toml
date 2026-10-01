@@ -1,0 +1,9 @@
+# 锁定工具链到 src-tauri/Cargo.toml 里声明的 MSRV（rust-version）。
+#
+# 之前 CI 用的是 `dtolnay/rust-toolchain@stable`，而 Cargo.toml 声称支持 1.77 ——
+# 两者从未互相验证过，声明值因此是假的。实际依赖 tauri 2.12.x / tauri-build 2.7.x
+# 都要求 rustc >= 1.90。锁定后，"我们支持 1.90" 这句话才真的被每次 CI 验证。
+[toolchain]
+channel = "1.90"
+components = ["rustfmt", "clippy"]
+profile = "minimal"

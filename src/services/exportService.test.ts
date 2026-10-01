@@ -5,11 +5,7 @@
 import { describe, it, expect } from "vitest";
 import { ExportService } from "./exportService";
 import type { Dataset, ExportOptions, CalibrationConfig } from "../types";
-function makeDs(
-  id: string,
-  name: string,
-  points: Array<{ x: number; y: number }>,
-): Dataset {
+function makeDs(id: string, name: string, points: Array<{ x: number; y: number }>): Dataset {
   return {
     id,
     name,
@@ -42,11 +38,7 @@ describe("buildCSVText 长表（pandas 可直读）", () => {
       { x: 1.234, y: 5.678 },
       { x: 2, y: 6 },
     ]);
-    const text = ExportService.buildCSVText(
-      [ds],
-      { ...baseOptions, mergeMode: "long" },
-      calib,
-    );
+    const text = ExportService.buildCSVText([ds], { ...baseOptions, mergeMode: "long" }, calib);
     const lines = text.split("\n");
     expect(lines[0]).toBe("dataset,时间(s),浓度(mol/L)");
     expect(lines[1]).toBe("数据集1,1.23,5.68");
@@ -56,22 +48,14 @@ describe("buildCSVText 长表（pandas 可直读）", () => {
   it("多数据集长表逐行拼接", () => {
     const a = makeDs("a", "A曲线", [{ x: 1, y: 2 }]);
     const b = makeDs("b", "B曲线", [{ x: 3, y: 4 }]);
-    const text = ExportService.buildCSVText(
-      [a, b],
-      { ...baseOptions, mergeMode: "long" },
-      calib,
-    );
+    const text = ExportService.buildCSVText([a, b], { ...baseOptions, mergeMode: "long" }, calib);
     const lines = text.split("\n");
     expect(lines[1]).toBe("A曲线,1.00,2.00");
     expect(lines[2]).toBe("B曲线,3.00,4.00");
   });
   it("数据集名含逗号时被正确引用", () => {
     const ds = makeDs("a", "曲线,1", [{ x: 1, y: 2 }]);
-    const text = ExportService.buildCSVText(
-      [ds],
-      { ...baseOptions, mergeMode: "long" },
-      calib,
-    );
+    const text = ExportService.buildCSVText([ds], { ...baseOptions, mergeMode: "long" }, calib);
     expect(text.split("\n")[1]).toBe('"曲线,1",1.00,2.00');
   });
 });
@@ -82,11 +66,7 @@ describe("buildCSVText 宽表（按 X 对齐）", () => {
       { x: 1, y: 20 },
       { x: 2, y: 30 },
     ]);
-    const text = ExportService.buildCSVText(
-      [a, b],
-      { ...baseOptions, mergeMode: "wide" },
-      calib,
-    );
+    const text = ExportService.buildCSVText([a, b], { ...baseOptions, mergeMode: "wide" }, calib);
     const lines = text.split("\n");
     expect(lines[0]).toBe("时间(s),A,B");
     expect(lines[1]).toBe("1.00,10.00,20.00");
@@ -113,11 +93,7 @@ describe("数据集勾选过滤", () => {
 describe("XLSX/JSON 语义元信息", () => {
   it("JSON 导出携带 axes 元信息（label/unit）", async () => {
     const ds = makeDs("a", "A", [{ x: 1, y: 2 }]);
-    const blob = await ExportService.export(
-      [ds],
-      { ...baseOptions, format: "json" },
-      calib,
-    );
+    const blob = await ExportService.export([ds], { ...baseOptions, format: "json" }, calib);
     const json = JSON.parse(await blob.text());
     expect(json.calibration.axes.x.label).toBe("时间");
     expect(json.calibration.axes.x.unit).toBe("s");
@@ -125,11 +101,7 @@ describe("XLSX/JSON 语义元信息", () => {
   });
   it("XLSX 导出成功且可解析", async () => {
     const ds = makeDs("a", "A", [{ x: 1, y: 2 }]);
-    const blob = await ExportService.export(
-      [ds],
-      { ...baseOptions, format: "xlsx" },
-      calib,
-    );
+    const blob = await ExportService.export([ds], { ...baseOptions, format: "xlsx" }, calib);
     expect(blob.size).toBeGreaterThan(100);
   });
 });
@@ -150,11 +122,7 @@ describe("XLSX 表名清洗与唯一化", () => {
   });
   it("含非法字符的表名被清洗，不再抛错", async () => {
     const ds = makeDs("a", "A[1]:b/c", [{ x: 1, y: 2 }]);
-    const blob = await ExportService.export(
-      [ds],
-      { ...baseOptions, format: "xlsx" },
-      calib,
-    );
+    const blob = await ExportService.export([ds], { ...baseOptions, format: "xlsx" }, calib);
     const XLSX = await import("xlsx");
     const wb = XLSX.read(await blob.arrayBuffer, { type: "array" });
     expect(wb.SheetNames[0]).not.toMatch(/[:\\/?*[\]]/);
