@@ -29,7 +29,7 @@
     "jszip": "^3.10.1",
     "lucide-react": "^1.49.0",
     "pdfjs-dist": "^4.7.76",
-    "radix-ui": "^1.6.7",
+    "radix-ui": "^1.7.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
