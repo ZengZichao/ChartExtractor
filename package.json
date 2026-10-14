@@ -25,7 +25,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.12.1",
+    "@tauri-apps/api": "^2.12.3",
     "jszip": "^3.10.1",
     "lucide-react": "^1.49.0",
     "pdfjs-dist": "^4.7.76",
