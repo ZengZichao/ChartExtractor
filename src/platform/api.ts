@@ -25,6 +25,7 @@
  */
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
+import { browserAppApi } from "./browserApi";
 export interface DialogFilter {
   name: string;
   extensions: string[];
@@ -79,9 +80,11 @@ export interface AppApi {
     extensions?: string[],
   ): Promise<Array<{ path: string; name: string }>>;
 }
-/** 是否运行在 Tauri 环境（区别于纯浏览器 dev） */
+/** 是否运行在 Tauri 环境（区别于纯浏览器 dev / GitHub Pages 网页版） */
 export const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
-export const appApi: AppApi = {
+
+/** Tauri 桌面版实现（invoke → Rust 命令层） */
+const tauriAppApi: AppApi = {
   openFileDialog(filters) {
     return invoke<string | null>("open_file", { filters: filters ?? null });
   },
@@ -188,3 +191,6 @@ export const appApi: AppApi = {
     });
   },
 };
+
+/** 对外统一入口：桌面走 Tauri 命令层，网页（GitHub Pages / 纯浏览器 dev）走 browserApi */
+export const appApi: AppApi = isTauri ? tauriAppApi : browserAppApi;

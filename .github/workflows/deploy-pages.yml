@@ -1,0 +1,66 @@
+name: Deploy Pages
+
+# 纯浏览器版（src/platform/browserApi.ts）构建产物发布到 GitHub Pages，
+# 用户可在网页上直接导入图片/PDF 完成图表数据提取，文件全程留在本地浏览器，不上传服务器。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # 支持手动触发（无需改代码即可重新发布）
+
+# 官方模板建议：pages 部署组不取消进行中的部署，避免产生半截站点。
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+# 最小权限：deploy-pages 需要 id-token（OIDC）与 pages 写权限；仓库内容只读。
+# 所有第三方 action 均锁定到完整 commit SHA（与 ci.yml 同一惯例）。
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Setup Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          # 首次运行自动开通 Pages（build_type=workflow），无需手动到仓库设置里点
+          enablement: true
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          # 版本单一来源：.nvmrc，与 package.json 的 engines.node 保持一致
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # 质量门禁（prettier/vitest/typecheck/离线红线）由 CI workflow 把关，这里只做产物构建
+      - name: Build renderer (browser bundle)
+        run: npm run build:renderer
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.0
