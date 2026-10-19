@@ -4460,7 +4460,8 @@ function App() {
                   onChange={(e) => setExportEncoding(e.target.value as "utf-8" | "gbk")}
                 >
                   <option value="utf-8">{t("export.encoding.utf8")}</option>
-                  <option value="gbk">{t("export.encoding.gbk")}</option>
+                  {/* GBK 编码由 Rust 命令层（encoding_rs）完成，纯浏览器版无原生 GBK 编码器，隐藏该选项 */}
+                  {isTauri && <option value="gbk">{t("export.encoding.gbk")}</option>}
                 </select>
               </div>
               <div className="panel-row">
